@@ -20,8 +20,6 @@ knitr::opts_chunk$set(
 
 AutoSpectral is AutoSpill updated for the spectral flow era.
 
-It is also pretty complex and newly released, so there will be bugs. Sorry. Please read the [help pages and articles](https://drcytometer.github.io/AutoSpectral/) before submitting bug reports. There's a lot of info there.
-
 The goal of AutoSpectral is to provide you with the best possible spectral 
 signatures of the fluorophores in your single-stained controls. Whether or not
 these accurately model your fully stained samples will depend on what you've 
@@ -33,7 +31,8 @@ controls as easy as compensation beads. This should give you better accuracy
 and precision in your spectral definition and thus in your unmixing.
 
 Plus, you can extract each cell's individual autofluorescent background in a 
-manner specific to that cell, producing better unmixing with less spread.
+manner specific to that cell, producing better unmixing with less spread. Per-cell
+fluorescence spectral optimization can reduce unmixing errors.
 
 At the moment, the following cytometers are supported:
 
@@ -45,12 +44,18 @@ At the moment, the following cytometers are supported:
 * Beckman Coulter CytoFLEX mosaic ("mosaic")
 * ThermoFisher Attune Xenith ("xenith")
 
-Support for the Mosaic and Xenith is new in version 0.8.2.
 
-There will likely be some unresolved issues with plotting data from certain 
-configurations of the ID7000 and Aurora. Edit: this should now be fixed.
+## Bug fixes and known issues
+AutoSpectral is pretty complex and newly released, so there will be bugs. Sorry. Thanks to all of you providing feedback.
 
-Please note that FCS 3.2 files from the S8 and A8 cytometers are not fully 
+Please check the [help pages and articles](https://drcytometer.github.io/AutoSpectral/) before submitting bug reports. There's a lot of info there.
+
+* Gating. The automated gating is not great. See the [help page](https://drcytometer.github.io/AutoSpectral/articles/Gating.html) for tips. I'm looking into an alternative.
+* Keywords. My attempt to preserve the original keywords from the FCS files has resulted in misalignment of some of the parameters
+* Lack of a minimal example with full workflow. I'm putting something together.
+* There will likely be some unresolved issues with plotting data from certain configurations of the ID7000 and Aurora. For example, Northern Lights spectral trace plots may show lasers that are not present on that configuration. This should be merely aesthetic.
+* Support for the Mosaic and Xenith is new in version 0.8.2.
+* Please note that FCS 3.2 files from the S8 and A8 cytometers are not fully 
 supported in flowCore. You may receive warnings, but things should still work.
 
 If you want to use data from another cytometer and are wiling to provide files 
