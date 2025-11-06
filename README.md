@@ -49,7 +49,8 @@ bug reports. There’s a lot of info there.
   page](https://drcytometer.github.io/AutoSpectral/articles/Gating.html)
   for tips. I’m looking into an alternative.
 - Keywords. My attempt to preserve the original keywords from the FCS
-  files has resulted in misalignment of some of the parameters
+  files has resulted in misalignment of some of the parameters. Edit:
+  This should be fixed in version 0.8.5.
 - Lack of a minimal example with full workflow. I’m putting something
   together.
 - There will likely be some unresolved issues with plotting data from
@@ -217,3 +218,4 @@ improvements are in the works.
 - Version 0.8.2: Support for Mosaic and Xenith cytometers
 - Version 0.8.3: Patch for error introduced in 0.8.2
 - Version 0.8.4: Changes to error messaging in check.control.file
+- version 0.8.5: Improvements to keyword handling in writing FCS files
