@@ -2,19 +2,20 @@
 % Please edit documentation in R/get_autospectral_param.r
 \name{get.autospectral.param}
 \alias{get.autospectral.param}
-\title{Get Autospectral Parameters}
+\title{Get AutoSpectral Parameters}
 \usage{
 get.autospectral.param(cytometer = "aurora", figures = TRUE)
 }
 \arguments{
 \item{cytometer}{The type of cytometer, default is \code{aurora}. Supported options
-include \code{aurora}, \code{id7000}, \code{a8}, \code{s8}, \code{opteon}, \code{mosaic} and \code{xenith}.}
+include \code{aurora}, \code{auroraNL} for Northern Lights, \code{id7000}, \code{a8}, \code{s8}, \code{a5se},
+\code{opteon}, \code{mosaic} and \code{xenith}.}
 
 \item{figures}{Logical indicating whether to set up directory parameters for
 figures and tables, default is \code{TRUE}}
 }
 \value{
-A list of autospectral parameters.
+A list of AutoSpectral parameters.
 }
 \description{
 Retrieves autospectral parameters for a specified cytometer.

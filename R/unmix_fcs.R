@@ -170,32 +170,10 @@ unmix.fcs <- function( fcs.file, spectra, asp, flow.control,
     other.exprs <- other.exprs[ , asp$time.and.scatter ]
 
   # define weights if needed
-  # if A8 or S8, pull detector reliability info from FCS file
-  # otherwise, use empirical Poisson variance
   if ( weighted | method == "WLS"| method == "Poisson"| method == "FastPoisson" ) {
     if ( is.null( weights ) ) {
-
-      if ( grepl( "Discover", asp$cytometer ) ) {
-        qspe <- fcs.keywords[[ "BDSPECTRAL QSPE" ]]
-        qspe.values <- strsplit( qspe, ",")[[ 1 ]]
-        n.channels <- as.numeric( qspe.values[ 1 ] )
-        channel.names <- qspe.values[ 2:( n.channels + 1 ) ]
-        weights <- as.numeric( qspe.values[ ( n.channels + 2 ):( n.channels * 2 + 1 ) ] )
-        names( weights ) <- channel.names
-
-        if ( all( spectral.channel %in% names( weights ) ) ) {
-          weights <- 1 / weights[ spectral.channel ]
-        } else {
-          # fallback to empirical weighting
-          channel.var <- colMeans( spectral.exprs )
-          weights <- 1 / ( channel.var + 1e-6 )
-        }
-
-      } else {
-        # weights are inverse of channel variances (mean if Poisson)
-        channel.var <- colMeans( spectral.exprs )
-        weights <- 1 / ( channel.var + 1e-6 )
-      }
+      weights <- pmax( abs( colMeans( spectral.exprs ) ), 1e-6 )
+      weights <- 1 / weights
     }
   }
 

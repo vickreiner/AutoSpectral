@@ -49,7 +49,7 @@ reload.flow.control <- function( control.dir, control.def.file, asp ) {
                                                           flow.spectral.channel ) ]
 
   # reorganize channels if necessary
-  flow.spectral.channel <- check.channels( flow.spectral.channel, asp$cytometer )
+  flow.spectral.channel <- check.channels( flow.spectral.channel, asp )
 
   flow.spectral.channel.n <- length( flow.spectral.channel )
 

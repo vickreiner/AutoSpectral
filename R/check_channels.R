@@ -9,7 +9,8 @@
 #' @importFrom utils read.csv
 #'
 #' @param spectral.channels Vector of initial spectral channel names.
-#' @param cytometer The cytometer. Use `asp$cytometer`.
+#' @param asp The AutoSpectral parameter list. Generate using
+#' `get.autospectral.param`
 #'
 #' @return Returns the vector of spectral channels re-organized in excitation-
 #' emission order. That is, narrowest to longest excitation laser, wtih narrowest
@@ -17,7 +18,7 @@
 #'
 #' @export
 
-check.channels <- function( spectral.channels, cytometer ) {
+check.channels <- function( spectral.channels, asp ) {
   # check for `FJ-Comp`
   fj.comp <- grepl( "FJ-Comp", spectral.channels )
 
@@ -27,21 +28,29 @@ check.channels <- function( spectral.channels, cytometer ) {
 
   # match against reference channels for this cytometer
   database.path <- system.file( "extdata", "cytometer_database.csv",
-                                     package = "AutoSpectral" )
+                                package = "AutoSpectral" )
+
   cytometers <- read.csv( database.path )
 
-  if ( cytometer == "Aurora" ) {
+  if ( asp$cytometer == "Aurora" ) {
     detectors <- cytometers$Aurora
-  } else if ( cytometer == "ID7000" ) {
+    if ( asp$cytometer.version == "NL" ) {
+      detectors <- cytometers$NorthernLights
+    } else {
+      detectors <- cytometers$Aurora
+    }
+  } else if ( asp$cytometer == "ID7000" ) {
     detectors <- cytometers$ID7000
-  } else if ( grepl( "Discover", cytometer ) ) {
+  } else if ( grepl( "Discover", asp$cytometer ) ) {
     detectors <- cytometers$Discover
-  } else if ( cytometer == "Opteon" ) {
+  } else if ( asp$cytometer == "Opteon" ) {
     detectors <- cytometers$Opteon
-  } else if ( cytometer == "Mosaic" ) {
+  } else if ( asp$cytometer == "Mosaic" ) {
     detectors <- cytometers$Mosaic
-  } else if ( cytometer == "Xenith" ) {
+  } else if ( asp$cytometer == "Xenith" ) {
     detectors <- cytometers$Xenith
+  } else if ( asp$cytometer == "Symphony" ) {
+    detectors <- cytometers$A5SE
   } else {
     stop( "Unsupported cytometer" )
   }

@@ -161,10 +161,13 @@ get.fluorophore.spectra <- function( flow.control, asp, use.clean.expr = TRUE,
       fluorophore.spectra.plot <- rbind( fluorophore.spectra.plot, af.spectra )
 
     spectral.trace( spectral.matrix = fluorophore.spectra.plot,
-                    title = title, plot.dir = asp$figure.spectra.dir,
+                    asp = asp,
+                    title = title,
+                    plot.dir = asp$figure.spectra.dir,
                     split.lasers = TRUE,
-                    asp$figure.spectra.line.size,
-                    asp$figure.spectra.point.size )
+                    figure.spectra.line.size = asp$figure.spectra.line.size,
+                    figure.spectra.point.size = asp$figure.spectra.point.size )
+
     spectral.heatmap( fluorophore.spectra.plot, title,
                       plot.dir = asp$figure.spectra.dir )
   }

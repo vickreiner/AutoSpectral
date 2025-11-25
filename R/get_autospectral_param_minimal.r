@@ -63,8 +63,6 @@ get.autospectral.param.minimal <- function()
       marker.forbidden.char = " !\"#$%&'*,/:;?@[\\]^{|}~",
       marker.substitution.char = "-",
 
-      database.dir = "./source/fluorophore_database/",
-
       similarity.warning.n = 0.95,
 
       ### autofluorescence and control cleaning parameters

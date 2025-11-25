@@ -15,7 +15,8 @@
 #' @importFrom stats setNames
 #'
 #' @param control.dir file path to the single stained control fcs files
-#' @param asp AutoSpectral parameter list. Generate using `get.autospectral.param`
+#' @param asp The AutoSpectral parameter list. Generate using
+#' `get.autospectral.param`
 #'
 #' @return No returns. Outputs a csv file called fcs_control_file.csv
 #' @export
@@ -60,7 +61,11 @@ create.control.file <- function( control.dir, asp ){
 
   # set corresponding peak detectors based on cytometer
   if ( asp$cytometer == "Aurora" ) {
-    detectors <- setNames( fluorophore.database$channel.Aurora, fluorophore.database$fluorophore )
+    if ( asp$cytometer.version == "NL" ) {
+      detectors <- setNames( fluorophore.database$channel.NL, fluorophore.database$fluorophore )
+    } else {
+      detectors <- setNames( fluorophore.database$channel.Aurora, fluorophore.database$fluorophore )
+    }
   } else if ( asp$cytometer == "ID7000" ) {
     detectors <- setNames( fluorophore.database$channel.ID7000, fluorophore.database$fluorophore )
   } else if ( asp$cytometer == "FACSDiscover A8" ) {
@@ -73,6 +78,8 @@ create.control.file <- function( control.dir, asp ){
     detectors <- setNames( fluorophore.database$channel.mosaic, fluorophore.database$fluorophore )
   } else if ( asp$cytometer == "Xenith" ) {
     detectors <- setNames( fluorophore.database$channel.xenith, fluorophore.database$fluorophore )
+  } else if ( asp$cytometer == "Symphony" ) {
+    detectors <- setNames( fluorophore.database$channel.A5SE, fluorophore.database$fluorophore )
   } else {
     stop( "Unsupported cytometer" )
   }
@@ -92,12 +99,11 @@ create.control.file <- function( control.dir, asp ){
     type
   } )
 
-
   # reorder list by wavelength column in database file
   control.def.file.merged <- merge( control.def.file, fluorophore.database,
                                     by = "fluorophore", all.x = TRUE )
 
-  laser.order <- c( "UV", "Violet", "Blue", "YellowGreen", "Red" )
+  laser.order <- c( "DeepUV", "UV", "Violet", "Blue", "YellowGreen", "Red", "IR" )
 
   control.def.file.merged$excitation.laser <- factor( control.def.file.merged$excitation.laser,
                                                       levels = laser.order )

@@ -6,6 +6,7 @@
 \usage{
 spectral.trace(
   spectral.matrix,
+  asp,
   title = "Fluorophore_Spectra",
   plot.dir = NULL,
   split.lasers = TRUE,
@@ -22,6 +23,9 @@ spectral.trace(
 \item{spectral.matrix}{Matrix or dataframe containing spectral data. This
 should be in format fluorophores x detectors. Row names will be used as the
 fluorophore names. Column names will be used as the detectors (channels).}
+
+\item{asp}{The AutoSpectral parameter list defined using
+\code{get.autospectral.param}.}
 
 \item{title}{Title for the plot. Default is \code{Fluorophore_Spectra}}
 

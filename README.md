@@ -28,10 +28,12 @@ errors.
 
 At the moment, the following cytometers are supported:
 
-- Cytek Aurora/Northern Lights (“aurora”)
+- Cytek Aurora (“aurora”)
+- Cytek Northern Lights (“auroraNL”)
 - Sony ID7000 (“id7000”)
 - BD FACSDiscoverS8 (“s8”)
 - BD FACSDiscoverA8 (“a8”)
+- BD FACSymphony A5 SE (“a5se”)
 - Agilent NovoCyte Opteon (“opteon”)
 - Beckman Coulter CytoFLEX mosaic (“mosaic”)
 - ThermoFisher Attune Xenith (“xenith”)
@@ -43,7 +45,7 @@ At the moment, the following cytometers are supported:
 
 ### Latest Release
 
-**Version 0.8.6**
+**Version 0.8.7**
 
 Install using `devtools` or `remotes`. You will need to install the
 Bioconductor packages separately, I believe.
@@ -89,16 +91,6 @@ Workflow](https://drcytometer.github.io/AutoSpectral/articles/Full_AutoSpectral_
 - Gating. The automated gating is not great. See the [help
   page](https://drcytometer.github.io/AutoSpectral/articles/Gating.html)
   for tips. I’m looking into an alternative.
-- Keywords. My attempt to preserve the original keywords from the FCS
-  files has resulted in misalignment of some of the parameters. Edit:
-  This should be fixed in version 0.8.5 onwards.
-- Lack of a minimal example with full workflow. I’m putting something
-  together.
-- There will likely be some unresolved issues with plotting data from
-  certain configurations of the ID7000 and Aurora. For example, Northern
-  Lights spectral trace plots may show lasers that are not present on
-  that configuration. This should be merely aesthetic.
-- Support for the Mosaic and Xenith is new in version 0.8.2.
 - Please note that FCS 3.2 files from the S8 and A8 cytometers are not
   fully supported in flowCore. You may receive warnings, but things
   should still work.
@@ -252,3 +244,5 @@ improvements are in the works.
 - Version 0.8.4: Changes to error messaging in check.control.file
 - Version 0.8.5: Improvements to keyword handling in writing FCS files
 - Version 0.8.6: Improvements to plotting, fluorophore matching
+- Version 0.8.7: Support for Symphony A5 SE. More improvements to
+  plotting.

@@ -1,6 +1,6 @@
-# get_autospectral_param_aurora.r
+# get_autospectral_param_auroraNL.r
 
-#' @title Get Autospectral Parameters for Aurora Cytometer
+#' @title Get Autospectral Parameters for the Aurora Northern Lights Cytometer
 #'
 #' @description
 #' Returns parameters for running a calculation of unmixing with
@@ -12,11 +12,11 @@
 #'
 #' @export
 
-get.autospectral.param.aurora <- function( autosp.param )
+get.autospectral.param.auroraNL <- function( autosp.param )
 {
   # add cytometer-specific parameters
   autosp.param$cytometer <- "Aurora"
-  autosp.param$cytometer.version <- "5L"
+  autosp.param$cytometer.version <- "NL"
 
   autosp.param$scatter.data.min.x <- 0
 

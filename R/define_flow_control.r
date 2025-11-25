@@ -19,8 +19,8 @@
 #' @param control.dir File path to the single-stained control FCS files.
 #' @param control.def.file CSV file defining the single-color control file names,
 #' fluorophores they represent, marker names, peak channels, and gating requirements.
-#' @param asp The AutoSpectral parameter list defined
-#' using `get.autospectral.param`.
+#' @param asp The AutoSpectral parameter list defined using
+#' `get.autospectral.param`.
 #' @param gate Logical, default is `TRUE`, in which case, automated gating will
 #' be performed. If `FALSE`, the FCS files will be imported without automatically
 #' generated gates applied. That is, all data in the files will be used. This is
@@ -108,16 +108,16 @@ define.flow.control <- function( control.dir, control.def.file, asp,
                                                           flow.spectral.channel ) ]
 
   # reorganize channels if necessary
-  flow.spectral.channel <- check.channels( flow.spectral.channel, asp$cytometer )
+  flow.spectral.channel <- check.channels( flow.spectral.channel, asp )
 
   flow.spectral.channel.n <- length( flow.spectral.channel )
 
   # get fluorophores and markers
   control.table$sample <- control.table$fluorophore
 
-  control.table$universal.negative[ is.na( control.table$universal.negative )] <- FALSE
-  control.table$is.viability[ is.na( control.table$is.viability )] <- FALSE
-  control.table$large.gate[ is.na( control.table$large.gate )] <- FALSE
+  control.table$universal.negative[ is.na( control.table$universal.negative ) ] <- FALSE
+  control.table$is.viability[ is.na( control.table$is.viability ) ] <- FALSE
+  control.table$large.gate[ is.na( control.table$large.gate ) ] <- FALSE
 
   negative.types <- data.frame( negative = control.table$universal.negative,
                                 large.gate = control.table$large.gate,
@@ -390,6 +390,7 @@ define.flow.control <- function( control.dir, control.def.file, asp,
   for ( fs.idx in 1 : flow.sample.n )
   {
     flow.sample.event.number <- nrow( flow.expr.data[[ fs.idx ]]  )
+
     flow.the.sample <- flow.sample[ fs.idx ]
 
     flow.the.event <- sprintf( "%s.%0*d", flow.the.sample,
@@ -414,6 +415,14 @@ define.flow.control <- function( control.dir, control.def.file, asp,
                              labels = names( event.type.factor ) )
 
   names( flow.control.type ) <- flow.fluorophore
+
+  # quickly re-determine peak AF channel empirically
+  if ( any( flow.fluorophore == "AF" ) ) {
+    idx <- which( flow.fluorophore == "AF" )
+    af.data <- flow.expr.data[ which( flow.event.sample == "AF" ), ]
+    af.max <- which.max( colMeans( af.data[ , flow.spectral.channel ] ) )
+    flow.channel[ idx ] <- flow.spectral.channel[ af.max ]
+  }
 
   # make control info
   flow.control <- list(

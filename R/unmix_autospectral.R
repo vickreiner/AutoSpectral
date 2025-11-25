@@ -58,8 +58,8 @@ unmix.autospectral <- function( raw.data, spectra, af.spectra,
     unmix <- unmix.ols
 
   if ( weighted & is.null( weights ) ) {
-    weights <- colMeans( raw.data )
-    weights <- 1 / ( weights + 1e-6 )
+    weights <- pmax( abs( colMeans( raw.data ) ), 1e-6 )
+    weights <- 1 / weights
   }
 
   fluorophores <- rownames( spectra )

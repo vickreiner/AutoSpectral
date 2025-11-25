@@ -15,6 +15,8 @@
 #' @param spectral.matrix Matrix or dataframe containing spectral data. This
 #' should be in format fluorophores x detectors. Row names will be used as the
 #' fluorophore names. Column names will be used as the detectors (channels).
+#' @param asp The AutoSpectral parameter list defined using
+#' `get.autospectral.param`.
 #' @param title Title for the plot. Default is `Fluorophore_Spectra`
 #' @param plot.dir Directory to save the plot files. Default is `NULL`, in
 #' which case the current working directory will be used.
@@ -41,8 +43,10 @@
 #' @export
 
 spectral.trace <- function( spectral.matrix,
+                            asp,
                             title = "Fluorophore_Spectra",
-                            plot.dir = NULL, split.lasers = TRUE,
+                            plot.dir = NULL,
+                            split.lasers = TRUE,
                             figure.spectra.line.size = 1,
                             figure.spectra.point.size = 1,
                             color.palette = NULL,
@@ -51,32 +55,61 @@ spectral.trace <- function( spectral.matrix,
                             plot.height = NULL,
                             save = TRUE ) {
 
+
+  # get excitation laser based on peak emission detector
+  peak.detectors <- colnames( spectral.matrix )[ max.col( spectral.matrix ) ]
+
+  # convert to data.frame for plotting
   fluor.spectra.plotting <- data.frame( spectral.matrix, check.names = FALSE )
   fluor.spectra.plotting$Fluorophore <- rownames( fluor.spectra.plotting )
 
   if ( is.null( plot.dir ) )
     plot.dir <- getwd()
 
-  # get excitation laser
-  # change this to reflect empirical peak detector
-  # change to get mapping to new database
-  # change to proceed with only non-split if no database found
-  laser.order <- c( "UV", "Violet","Blue", "YellowGreen", "Red" )
-
-  data.path <- system.file( "extdata", "fluorophore_database.csv",
+  data.path <- system.file( "extdata", "cytometer_database.csv",
                             package = "AutoSpectral" )
 
-  if ( data.path == "" )
-    stop( "fluorophore_database.csv not found in extdata." )
+  # can only do splitting if we know the laser
+  if ( data.path == "" ) {
+    warning( "cytometer_database.csv.csv not found in extdata." )
+    split.lasers <- FALSE
+  }
 
-  fluorophore.database <- read.csv( data.path )
-  fluorophore.database[ fluorophore.database == "" ] <- NA
-  lasers <- setNames( fluorophore.database$excitation.laser,
-                      fluorophore.database$fluorophore )
+  cytometer.database <- read.csv( data.path )
+  cytometer.database[ cytometer.database == "" ] <- NA
 
-  laser.idx <- match( fluor.spectra.plotting$Fluorophore, names( lasers ) )
+  if ( asp$cytometer == "Aurora" ) {
+    if ( asp$cytometer.version == "NL" ) {
+      detectors <- setNames( cytometer.database$NorthernLights, cytometer.database$NorthernLights_laser )
+    } else {
+      detectors <- setNames( cytometer.database$Aurora, cytometer.database$Aurora_laser )
+    }
+  } else if ( asp$cytometer == "ID7000" ) {
+    detectors <- setNames( cytometer.database$ID7000, cytometer.database$ID7000_laser )
+  } else if ( asp$cytometer == "FACSDiscover A8" ) {
+    detectors <- setNames( cytometer.database$Discover, cytometer.database$Discover_laser )
+  } else if ( asp$cytometer == "FACSDiscover S8" ) {
+    detectors <- setNames( cytometer.database$Discover, cytometer.database$Discover_laser )
+  } else if ( asp$cytometer == "Opteon" ) {
+    detectors <- setNames( cytometer.database$Opteon, cytometer.database$Opteon_laser )
+  } else if ( asp$cytometer == "Mosaic" ) {
+    detectors <- setNames( cytometer.database$Mosaic, cytometer.database$Mosaic_laser )
+  } else if ( asp$cytometer == "Xenith" ) {
+    detectors <- setNames( cytometer.database$Xenith, cytometer.database$Xenith_laser )
+  } else if ( asp$cytometer == "Symphony" ) {
+    detectors <- setNames( cytometer.database$A5SE, cytometer.database$A5SE_laser )
+  } else {
+    warning( "Unsupported cytometer" )
+    split.lasers <- FALSE
+  }
 
-  fluor.spectra.plotting$Laser <- lasers[ laser.idx ]
+  detectors <- detectors[ !is.na( detectors ) ]
+
+  laser.order <- unique( names( detectors ) )
+
+  laser.idx <- match( peak.detectors, detectors )
+
+  fluor.spectra.plotting$Laser <- names( detectors )[ laser.idx ]
   fluor.spectra.plotting$Laser[ is.na( fluor.spectra.plotting$Laser ) ] <- "Violet"
   fluor.spectra.plotting$Laser <- factor( fluor.spectra.plotting$Laser,
                                           levels = laser.order )
@@ -123,7 +156,6 @@ spectral.trace <- function( spectral.matrix,
   } else {
     return( spectra.plot )
   }
-
 
   if ( split.lasers ) {
     # get number of lasers used

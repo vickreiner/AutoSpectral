@@ -1,15 +1,16 @@
 # get_autospectral_param.r
 
-#' @title Get Autospectral Parameters
+#' @title Get AutoSpectral Parameters
 #'
 #' @description Retrieves autospectral parameters for a specified cytometer.
 #'
 #' @param cytometer The type of cytometer, default is `aurora`. Supported options
-#' include `aurora`, `id7000`, `a8`, `s8`, `opteon`, `mosaic` and `xenith`.
+#' include `aurora`, `auroraNL` for Northern Lights, `id7000`, `a8`, `s8`, `a5se`,
+#' `opteon`, `mosaic` and `xenith`.
 #' @param figures Logical indicating whether to set up directory parameters for
 #' figures and tables, default is `TRUE`
 #'
-#' @return A list of autospectral parameters.
+#' @return A list of AutoSpectral parameters.
 #'
 #' @export
 

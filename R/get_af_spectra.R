@@ -108,7 +108,11 @@ get.af.spectra <- function( unstained.sample,
     if ( is.null( title ) )
       title <- asp$af.file.name
 
-    spectral.trace( af.spectra, title, plot.dir, split.lasers = FALSE )
+    spectral.trace( spectral.matrix = af.spectra,
+                    asp = asp,
+                    title = title,
+                    plot.dir = plot.dir,
+                    split.lasers = FALSE )
 
     spectral.heatmap( af.spectra, title, plot.dir )
   }

@@ -25,12 +25,10 @@ unmix.wls <- function( raw.data, spectra, weights = NULL ) {
   spectra <- t( spectra )
 
   if ( is.null( weights ) ) {
-    channel.var <- colMeans( raw.data )
-
     # weights are inverse of channel variances (mean if Poisson)
-    channel.weights <- 1 / ( channel.var + 1e-6 )
-
-    W <- diag( channel.weights )
+    weights <- pmax( abs( colMeans( raw.data ) ), 1e-6 )
+    weights <- 1 / weights
+    W <- diag( weights )
 
   } else {
     if ( !is.numeric( weights ) )

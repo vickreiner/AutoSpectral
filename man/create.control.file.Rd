@@ -9,7 +9,8 @@ create.control.file(control.dir, asp)
 \arguments{
 \item{control.dir}{file path to the single stained control fcs files}
 
-\item{asp}{AutoSpectral parameter list. Generate using \code{get.autospectral.param}}
+\item{asp}{The AutoSpectral parameter list. Generate using
+\code{get.autospectral.param}}
 }
 \value{
 No returns. Outputs a csv file called fcs_control_file.csv

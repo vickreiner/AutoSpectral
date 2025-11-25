@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">AutoSpectral</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.5.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.7</span>
       </span>
     </div>
 
@@ -121,43 +121,59 @@
 <li>ThermoFisher Attune Xenith (“xenith”)</li>
 </ul>
 <div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p><a href="https://github.com/DrCytometer/AutoSpectral" class="external-link"><img src="https://img.shields.io/badge/stable-master-blue" alt="Stable"></a> <a href="https://github.com/DrCytometer/AutoSpectral/tree/dev" class="external-link"><img src="https://img.shields.io/badge/dev-branch-orange" alt="Dev"></a></p>
+<div class="section level3">
+<h3 id="latest-release">Latest Release<a class="anchor" aria-label="anchor" href="#latest-release"></a>
+</h3>
+<p><strong>Version 0.8.6</strong></p>
+<p>Install using <code>devtools</code> or <code>remotes</code>. You will need to install the Bioconductor packages separately, I believe.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Install Bioconductor packages</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"flowWorkspace"</span>, <span class="st">"flowCore"</span>, <span class="st">"PeacoQC"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># You'll need devtools or remotes to install from GitHub.</span></span>
+<span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"DrCytometer/AutoSpectral"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="dev-branch">Dev branch<a class="anchor" aria-label="anchor" href="#dev-branch"></a>
+</h3>
+<p>You can install the development version of AutoSpectral from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"DrCytometer/AutoSpectral@dev"</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
 <h2 id="bug-fixes-and-known-issues">Bug fixes and known issues<a class="anchor" aria-label="anchor" href="#bug-fixes-and-known-issues"></a>
 </h2>
 <p>AutoSpectral is pretty complex and newly released, so there will be bugs. Sorry. Thanks to all of you providing feedback.</p>
-<p>Since one of my recent updates broke things, I’ll be moving to using tagged releases that should be easier to install if the latest version has flaws. I’ll also try to set up a separate development branch. Things probably should have been that way from the start, but this is all new to me.</p>
+<p>Since one of my recent updates broke things, I’ll be moving to using tagged releases that should be easier to install if the latest version has flaws. I’ve also set up a separate development branch, which will get the updates first. Things probably should have been that way from the start, but this is all new to me.</p>
 <p>Please check the <a href="https://drcytometer.github.io/AutoSpectral/" class="external-link">help pages and articles</a> before submitting bug reports. There’s a lot of info there.</p>
+<p>In particular, see the <a href="https://drcytometer.github.io/AutoSpectral/articles/Full_AutoSpectral_Workflow.html" class="external-link">Full Workflow</a>.</p>
 <ul>
 <li>Gating. The automated gating is not great. See the <a href="https://drcytometer.github.io/AutoSpectral/articles/Gating.html" class="external-link">help page</a> for tips. I’m looking into an alternative.</li>
-<li>Keywords. My attempt to preserve the original keywords from the FCS files has resulted in misalignment of some of the parameters. Edit: This should be fixed in version 0.8.5.</li>
+<li>Keywords. My attempt to preserve the original keywords from the FCS files has resulted in misalignment of some of the parameters. Edit: This should be fixed in version 0.8.5 onwards.</li>
 <li>Lack of a minimal example with full workflow. I’m putting something together.</li>
 <li>There will likely be some unresolved issues with plotting data from certain configurations of the ID7000 and Aurora. For example, Northern Lights spectral trace plots may show lasers that are not present on that configuration. This should be merely aesthetic.</li>
 <li>Support for the Mosaic and Xenith is new in version 0.8.2.</li>
 <li>Please note that FCS 3.2 files from the S8 and A8 cytometers are not fully supported in flowCore. You may receive warnings, but things should still work.</li>
+<li>More stuff in progress will appear in the <a href="https://drcytometer.github.io/AutoSpectral/articles/Development.html" class="external-link">Development article</a>
+</li>
 </ul>
 <p>If you want to use data from another cytometer and are wiling to provide files for establishing the workflow, contact the author/maintainer.</p>
 <p>This work has received funding from the KU Leuven C1 program, the European Union’s Horizon 2020 research and innovation programme under grant agreement No 874707 (EXIMIOUS), Wellcome Investigator Award 222442/A/21/Z, and UKRI Proactive Vaccinology Award MR/Y004450/1 (IMMPROVE).</p>
 <p>AutoSpectral is provided under an AGPL3 licence.</p>
 </div>
 <div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h2>
-<p>You can install the development version of AutoSpectral from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># Optional: Install Bioconductor packages</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"flowWorkspace"</span>, <span class="st">"flowCore"</span>, <span class="st">"PeacoQC"</span>, <span class="st">"Biobase"</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># You'll need devtools or remotes to install from GitHub.</span></span>
-<span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"DrCytometer/AutoSpectral"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<p>This is a basic example of the workflow, using samples from the ID7000. This only illustrates weighted least squares unmixing. For per-cell autofluorescence extraction or per-cell fluorophore optimization, see the articles on those topics.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>Below is a basic example of the workflow, using samples from the ID7000. This only illustrates weighted least squares unmixing. For per-cell autofluorescence extraction or per-cell fluorophore optimization, see the articles on those topics.</p>
+<p>Please see the <a href="https://drcytometer.github.io/AutoSpectral/articles/Full_AutoSpectral_Workflow.html" class="external-link">Full Workflow</a></p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span> <span class="va"><a href="https://github.com/DrCytometer/AutoSpectral" class="external-link">AutoSpectral</a></span> <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Define the location of the single-stained control files.</span></span>
@@ -222,14 +238,14 @@
 <p>Do not set multiple threads for the BLAS as this will conflict with higher level parallelization, either in AutoSpectral or other packages.</p>
 <p>Second, install AutoSpectralRcpp. This is fully accessible from R and integrates with AutoSpectral. But, when it gets to the slow bits in the unmixing, it switches over to calculating in C++, so it can be 10-100x faster.</p>
 <p><a href="https://github.com/DrCytometer/AutoSpectralRcpp" class="external-link">AutoSpectralRcpp</a></p>
-<p>You can install the development version of AutoSpectralRcpp like so:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<p>You will need <a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link">Rtools</a> to compile this.</p>
+<p>You can install AutoSpectralRcpp like so:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"DrCytometer/AutoSpectralRcpp"</span><span class="op">)</span></span></code></pre></div>
 <p>Third, turn on parallel processing in AutoSpectral. At the moment, this is not fully optimized in AutoSpectral. The parallel processing in AutoSpectralRcpp operates via OpenMP and works well. It is always activated, but the number of threads can be configured.</p>
-<p>To activate parallel processing, either set the <code>parallel</code> flag to <code>TRUE</code> in <code>asp</code> or check the function arguments for a <code>parallel</code> option. Additionally, there is control over the number of threads used, either directly in the function call or via <code>asp$max.worker.process.n</code>. Sorry, this will be cleaned up soon.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">asp</span><span class="op">$</span><span class="va">parallel</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
-<span><span class="va">asp</span><span class="op">$</span><span class="va">max.worker.process.n</span></span></code></pre></div>
+<p>To activate parallel processing, check the function arguments for a <code>parallel</code> option and set it to <code>TRUE</code>. Additionally, there is control over the number of threads used, which should be directly in the function call via a <code>threads</code> argument. If you don’t know how many threads to use, check the recommendation for your machine after running <code><a href="reference/get.autospectral.param.html">get.autospectral.param()</a></code>:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">asp</span><span class="op">$</span><span class="va">max.worker.process.n</span></span></code></pre></div>
 <p>For unmixing larger data sets, you will do well to use a machine with more CPUs. Suggestions for faster processing are welcome. Some modest improvements are in the works.</p>
 </div>
 <div class="section level2">
@@ -240,7 +256,8 @@
 <li>Version 0.8.2: Support for Mosaic and Xenith cytometers</li>
 <li>Version 0.8.3: Patch for error introduced in 0.8.2</li>
 <li>Version 0.8.4: Changes to error messaging in check.control.file</li>
-<li>version 0.8.5: Improvements to keyword handling in writing FCS files</li>
+<li>Version 0.8.5: Improvements to keyword handling in writing FCS files</li>
+<li>Version 0.8.6: Improvements to plotting, fluorophore matching</li>
 </ul>
 </div>
 </div>
@@ -275,7 +292,7 @@
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Oliver Burton <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-3884-7373" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
-<li>Carlos P. Roca <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-0230-1926" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>Adrian Liston <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-6272-4085" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
 
@@ -287,7 +304,7 @@
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Oliver Burton, Carlos P. Roca.</p>
+<p>Developed by Oliver Burton, Adrian Liston.</p>
 </div>
 
 <div class="pkgdown">

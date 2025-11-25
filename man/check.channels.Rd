@@ -4,12 +4,13 @@
 \alias{check.channels}
 \title{Check Channels}
 \usage{
-check.channels(spectral.channels, cytometer)
+check.channels(spectral.channels, asp)
 }
 \arguments{
 \item{spectral.channels}{Vector of initial spectral channel names.}
 
-\item{cytometer}{The cytometer. Use \code{asp$cytometer}.}
+\item{asp}{The AutoSpectral parameter list. Generate using
+\code{get.autospectral.param}}
 }
 \value{
 Returns the vector of spectral channels re-organized in excitation-

@@ -19,8 +19,8 @@ define.flow.control(
 \item{control.def.file}{CSV file defining the single-color control file names,
 fluorophores they represent, marker names, peak channels, and gating requirements.}
 
-\item{asp}{The AutoSpectral parameter list defined
-using \code{get.autospectral.param}.}
+\item{asp}{The AutoSpectral parameter list defined using
+\code{get.autospectral.param}.}
 
 \item{gate}{Logical, default is \code{TRUE}, in which case, automated gating will
 be performed. If \code{FALSE}, the FCS files will be imported without automatically
