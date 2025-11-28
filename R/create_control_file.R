@@ -33,11 +33,7 @@ create.control.file <- function( control.dir, asp ){
     file.count <- file.count + 1
   }
 
-  data.path <- system.file( "extdata", "fluorophore_database.csv",
-                            package = "AutoSpectral" )
-  fluorophore.database <- read.csv( data.path )
-  fluorophore.database[ fluorophore.database == "" ] <- NA
-
+  # find the files
   control.files <- list.files( control.dir, pattern = ".fcs", ignore.case = TRUE )
 
   check.critical( ! is.null( control.files ) & length( control.files > 1 ),
@@ -55,9 +51,21 @@ create.control.file <- function( control.dir, asp ){
   control.def.file$filename <- control.files
 
   # find corresponding fluorophores if possible
+  fluor.data.path <- system.file( "extdata", "fluorophore_database.csv",
+                            package = "AutoSpectral" )
+  fluorophore.database <- read.csv( fluor.data.path )
+  fluorophore.database[ fluorophore.database == "" ] <- NA
   fluorophore.matches <- match.fluorophores( control.files, fluorophore.database )
 
   control.def.file$fluorophore <- fluorophore.matches[ control.def.file$filename ]
+
+  # find markers if possible
+  marker.data.path <- system.file( "extdata", "marker_database.csv",
+                                  package = "AutoSpectral" )
+  marker.database <- read.csv( marker.data.path )
+  marker.database[ marker.database == "" ] <- NA
+  marker.matches <- match.markers( control.files, marker.database )
+  control.def.file$marker <- marker.matches[ control.def.file$filename ]
 
   # set corresponding peak detectors based on cytometer
   if ( asp$cytometer == "Aurora" ) {

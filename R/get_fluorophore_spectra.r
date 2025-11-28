@@ -170,15 +170,7 @@ get.fluorophore.spectra <- function( flow.control, asp, use.clean.expr = TRUE,
 
     spectral.heatmap( fluorophore.spectra.plot, title,
                       plot.dir = asp$figure.spectra.dir )
-  }
 
-  if ( !is.null( asp$table.spectra.dir ) )
-    write.csv( fluorophore.spectra.plot,
-              file = file.path( asp$table.spectra.dir,
-                               sprintf( "%s.csv", title ) ) )
-
-  # cosine similarity QC for controls
-  if ( asp$figures )
     cosine.similarity.plot( fluorophore.spectra.plot,
                             filename = asp$similarity.heatmap.file.name,
                             title,
@@ -186,6 +178,23 @@ get.fluorophore.spectra <- function( flow.control, asp, use.clean.expr = TRUE,
                             figure.width = asp$figure.similarity.width,
                             figure.height = asp$figure.similarity.height )
 
+    hotspot.matrix <- calculate.hotspot.matrix( marker.spectra )
+
+    create.heatmap( hotspot.matrix,
+                    title = paste( title, "Hotspot_Matrix", sep = "_" ),
+                    legend.label = expression( "Hotspot Matrix"^"TM" ),
+                    triangular = TRUE,
+                    plot.dir = asp$figure.similarity.heatmap.dir,
+                    color.palette = "inferno",
+                    figure.width = asp$figure.similarity.width,
+                    figure.height = asp$figure.similarity.height )
+  }
+
+  if ( !is.null( asp$table.spectra.dir ) )
+    write.csv( fluorophore.spectra.plot,
+               file = file.path( asp$table.spectra.dir, sprintf( "%s.csv", title ) ) )
+
+  # cosine similarity QC for controls
   similarity.matrix <- cosine.similarity( fluorophore.spectra.plot )
 
   unique.similarity <- similarity.matrix * lower.tri( similarity.matrix )
