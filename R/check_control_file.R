@@ -205,8 +205,6 @@ check.control.file <- function( control.dir, control.def.file, asp,
 
       errors$missing.channel <- problem.missing.channel
     }
-
-    # warning.list$missing.channel <- missing.channel
   }
 
   # check that control type has been filled in
@@ -352,34 +350,83 @@ check.control.file <- function( control.dir, control.def.file, asp,
   }
 
   # check that is.viability and large.gate are either absent, TRUE or FALSE
-  large.gate.input <- unique( control.table$large.gate[ !is.na( control.table$large.gate ) ] )
-  viability.input <- unique( control.table$is.viability[ !is.na( control.table$is.viability ) ] )
-  acceptable.input <- c( "TRUE", "FALSE" )
+  viability.input <- control.table$is.viability
+  viability.input.valid.idx <- !is.na( viability.input )
+  large.gate.input <- control.table$large.gate
+  large.gate.valid.idx <- !is.na( large.gate.input )
 
+  acceptable.input <- c("TRUE", "FALSE")
+
+  # check for non-standard entries
   if ( !is.logical( large.gate.input ) ) {
-    non.standard.large.gate <- !sapply( large.gate.input, function( x )
-      any( x == acceptable.input ) )
-    warning( "Only `TRUE` and `FALSE` are acceptable options for `large.gate`." )
-    message( paste( "\033[31mOnly `TRUE` and `FALSE` are acceptable options for `large.gate`.",
-                    "Enter TRUE, FALSE or leave the field blank (equivalent to FALSE).\033[0m",
-                    sep = "\n " ) )
-    message( "Problematic entry:" )
-    large.gate.error <- names( non.standard.large.gate )[ non.standard.large.gate ]
-    message( paste( large.gate.error, sep = "\n" ) )
-    errors$large.gate.error <- large.gate.error
+    non.standard.idx <- large.gate.valid.idx & !( large.gate.input %in% acceptable.input )
+
+    if ( any( non.standard.idx ) ) {
+      warning( "Only `TRUE` and `FALSE` are acceptable options for `large.gate`." )
+      message( paste(
+        "\033[31mOnly `TRUE` and `FALSE` are acceptable options for `large.gate`.",
+        "Enter TRUE, FALSE or leave the field blank (equivalent to FALSE).\033[0m",
+        sep = "\n"
+      ) )
+      message( "Problematic entry:" )
+
+      # Return filenames of problematic entries
+      large.gate.error <- control.table$filename[ non.standard.idx ]
+      message( paste( large.gate.error, collapse = "\n" ) )
+      errors$large.gate.error <- large.gate.error
+    }
   }
 
   if ( !is.logical( viability.input ) ) {
-    non.standard.viability <- !sapply( viability.input, function( x )
-      any( x == acceptable.input ) )
-    warning( "Only `TRUE` and `FALSE` are acceptable options for `is.viability`." )
-    message( paste( "\033[31mOnly `TRUE` and `FALSE` are acceptable options for `is.viability`.",
-                    "Enter TRUE, FALSE or leave the field blank (equivalent to FALSE).\033[0m",
-                    sep = "\n " ) )
-    message( "Problematic entry:" )
-    viability.error <- names( non.standard.viability )[ non.standard.viability ]
-    message( paste( viability.error, sep = "\n" ) )
-    errors$viability.error <- viability.error
+    non.standard.idx <- viability.input.valid.idx & !( viability.input %in% acceptable.input )
+
+    if ( any( non.standard.idx ) ) {
+      warning( "Only `TRUE` and `FALSE` are acceptable options for `is.viability`." )
+      message( paste(
+        "\033[31mOnly `TRUE` and `FALSE` are acceptable options for `is.viability`.",
+        "Enter TRUE, FALSE or leave the field blank (equivalent to FALSE).\033[0m",
+        sep = "\n"
+      ) )
+      message( "Problematic entry:" )
+
+      # Return filenames of problematic entries
+      viability.error <- control.table$filename[ non.standard.idx ]
+      message( paste( viability.error, collapse = "\n" ) )
+      errors$viability.error <- viability.error
+    }
+  }
+
+  # check for misallocation of `large.gate` or `is.viability` to bead controls
+  if ( any( large.gate.input ) ) {
+    non.standard.idx <- large.gate.valid.idx & ( control.table$control.type != "cells" )
+
+    if ( any( non.standard.idx ) ) {
+      warning( "Only cell-based controls should be marked as `TRUE` for `large.gate" )
+      message( paste(
+        "\033[31mOnly cell-based controls should be marked as `TRUE` for `large.gate",
+        "For bead-based controls, no matter the marker, leave `large.gate` blank or enter `FALSE`.\033[0m",
+        sep = "\n " ) )
+      message( "Problematic entry:" )
+      large.gate.error2 <- control.table$filename[ non.standard.idx ]
+      message( paste( large.gate.error2, sep = "\n" ) )
+      errors$large.gate.error2 <- large.gate.error2
+    }
+  }
+
+  if ( any( viability.input ) ) {
+    non.standard.idx <- viability.input.valid.idx & ( control.table$control.type != "cells" )
+
+    if ( any( non.standard.idx ) ) {
+      warning( "Only cell-based controls should be marked as `TRUE` for `is.viability." )
+      message( paste(
+        "\033[31mOnly cell-based controls should be marked as `TRUE` for `is.viability.",
+        "For bead-based viability controls (ArC beads), leave `is.viability` blank or `FALSE`.\033[0m",
+        sep = "\n " ) )
+      message( "Problematic entry:" )
+      viability.gate.error <- control.table$filename[ non.standard.idx ]
+      message( paste( viability.gate.error, sep = "\n" ) )
+      errors$viability.gate.error <- viability.gate.error
+    }
   }
 
   # check FCS files for consistency
@@ -387,15 +434,40 @@ check.control.file <- function( control.dir, control.def.file, asp,
 
     fcs.header <- suppressWarnings( flowCore::read.FCSheader( fcs, path = control.dir ) )
     header.text <- fcs.header[[ 1 ]]
+    n.events <- as.integer( header.text[ "$TOT" ] )
     param.n <- as.integer( header.text[ "$PAR" ] )
     param.names <- sapply( 1:param.n, function( i )
       header.text[[ paste0( "$P", i, "N" ) ]] )
 
     cyt <- header.text[ "$CYT" ]
 
-    list( parameters = param.names, cytometer = cyt )
+    list( parameters = param.names,
+          cytometer = cyt,
+          events = n.events )
   } )
 
+  # check for low event counts
+  n.events <- sapply( header.check, function( x ) x$events )
+  low.event.idx <- which( n.events < 5000 )
+
+  if ( length( low.event.idx ) > 0 ) {
+    low.count.files <- control.table$filename[ low.event.idx ]
+    message( paste( "\033[31mLow event count (<5000) detected in one or more files.",
+                    "Concerning files:\033[0m", sep = "\n" ) )
+    message( paste( low.count.files, collapse = "\n" ) )
+    warning.list$low.event.count <- low.count.files
+  }
+
+  very.low.event.idx <- which( n.events < 1000 )
+
+  if ( length( very.low.event.idx ) > 0 ) {
+    low.count.files <- control.table$filename[ very.low.event.idx ]
+    warning( "Some FCS files contain fewer than 1000 events:" )
+    message( paste( "\033[31mLow event count (<1000) detected in one or more files.",
+                    "Problematic files:\033[0m", sep = "\n" ) )
+    message( paste( low.count.files, collapse = "\n" ) )
+    errors$very.low.event.count <- low.count.files
+  }
 
   param.names.list <- lapply( header.check, `[[`, "parameters" )
   cytometer.list <- sapply( header.check, `[[`, "cytometer" )

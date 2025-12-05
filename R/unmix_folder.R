@@ -104,6 +104,8 @@ unmix.folder <- function( fcs.dir, spectra, asp, flow.control,
 
   if ( is.null( output.dir ) )
     output.dir <- asp$unmixed.fcs.dir
+  if ( !dir.exists( output.dir ) )
+    dir.create( output.dir )
 
   files.to.unmix <- list.files( fcs.dir, pattern = ".fcs", full.names = TRUE )
 

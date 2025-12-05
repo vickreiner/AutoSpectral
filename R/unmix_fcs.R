@@ -103,6 +103,8 @@ unmix.fcs <- function( fcs.file, spectra, asp, flow.control,
 
   if ( is.null( output.dir ) )
     output.dir <- asp$unmixed.fcs.dir
+  if ( !dir.exists( output.dir ) )
+    dir.create( output.dir )
 
   if ( is.null( threads ) )
     threads <- asp$worker.process.n

@@ -11,13 +11,12 @@ get.spectral.variants(
   spectra,
   af.spectra,
   n.cells = 2000,
-  pos.quantile = 0.995,
-  som.dim = 10,
-  sim.threshold = 0.98,
+  som.dim = 7,
   figures = TRUE,
   output.dir = NULL,
   parallel = FALSE,
-  verbose = TRUE
+  verbose = TRUE,
+  ...
 )
 }
 \arguments{
@@ -38,22 +37,14 @@ using \code{get.af.spectra}.}
 
 \item{n.cells}{Numeric, default \code{2000}. Number of cells to use for defining
 the variation in spectra. Up to \code{n.cells} cells will be selected as positive
-events in the peak channel for each fluorophore, above the \code{pos.quantile} in
-the unstained sample.}
+events in the peak channel for each fluorophore, above the 99.5th percentile
+level in the unstained sample.}
 
-\item{pos.quantile}{Numeric, default \code{0.995}. Threshold for positivity. This
-quantile will be used to define the maximum extent of the unstained sample in
-the unmixed space. Anything above that will be considered positive in the
-single-stained controls.}
-
-\item{som.dim}{Numeric, default \code{10}. Number of x and y dimensions to use in
-the SOM for clustering the spectral variation.}
-
-\item{sim.threshold}{Numeric, default \code{0.98}. Threshold for cosine similarity-
-based exclusion of spectral variants. Any variant less than \code{sim.threshold}
-by \code{cosine.similarity} from the optimized spectrum for that fluorophore (from
-\code{spectra}) will be excluded from output. This helps to exclude autofluorescence
-contamination.}
+\item{som.dim}{Numeric, default \code{7}. Number of x and y dimensions to use in
+the SOM for clustering the spectral variation. The number of spectra returned
+for each fluorophore will increase with the quadratic of \code{som.dim}, so for 7,
+you will get up to 49 variants. Increasing the SOM dimensions does not help.
+Somewhere between 4 and 7 appears to be optimal.}
 
 \item{figures}{Logical, controls whether the variation in spectra for each
 fluorophore is plotted in \code{output.dir}. Default is \code{TRUE}.}
@@ -67,6 +58,10 @@ files are read in. If the data is larger, parallel processing may not
 accelerate the process much or may fail outright.}
 
 \item{verbose}{Logical, default is \code{TRUE}. Set to \code{FALSE} to suppress messages.}
+
+\item{...}{Ignored. Previously used for deprecated arguments such as
+\code{pos.quantile} and \code{sim.threshold}, which are now fixed internally and no
+longer user-settable.}
 }
 \value{
 A vector with the indexes of events inside the initial gate.

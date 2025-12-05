@@ -45,7 +45,7 @@ At the moment, the following cytometers are supported:
 
 ### Latest Release
 
-**Version 0.8.7**
+**Version 0.9.0**
 
 To install the latest, hopefully stable version, install using
 `devtools` or `remotes`. You will need to install the Bioconductor
@@ -271,3 +271,7 @@ improvements are in the works.
   The Hotspot(TM) matrix will be calculated and plotted as per the
   [preprint](https://www.biorxiv.org/content/10.1101/2025.04.17.649396v2.full.pdf)
   by Peter Mage et al.
+- Version 0.9.0: Changes to `get.spectral.variants`, including fixing of
+  previously user-modifiable parameters, low-level denoising of spectra
+  and a bug patch for situations with beads using internal negatives.
+  More checks in `check.control.file`.
