@@ -15,11 +15,14 @@ user-modifiable parameters and low-level denoising of spectra.
 - See also updates in AutoSpectralRcpp, including a large speed up and general 
 improvement to the Poisson IRLS unmixing.
 - Changes to solve in unmix.ols and unmix.wls as suggested by SamGG.
+- FCS files will now be written with "-A" in the channel names, e.g., "PE-A"
+rather than just "PE".
 
 ## Bug fixes
 - Bug patch for situations with beads using internal negatives in 
 get.fluor.variants
 - Patch to reload.flow.control bug affecting ID7000 samples.
+
 
 ---
 # AutoSpectral 0.8.7 (2025-12-01)
