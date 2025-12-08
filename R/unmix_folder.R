@@ -70,7 +70,7 @@
 #' slow in the pure R implementation. Installation of `AutoSpectralRcpp` is
 #' strongly encouraged.
 #' @param parallel Logical, default is `FALSE`. Set to `TRUE` to activate parallel
-#' processing using futures for multiple FCS files.
+#' processing for multiple FCS files.
 #' @param threads Numeric, default is `NULL`, in which case `asp$worker.process.n`
 #' will be used. `asp$worker.process.n` is set by default to be one less than the
 #' available cores on the machine. Multi-threading is only used if `parallel` is

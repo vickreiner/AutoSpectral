@@ -111,7 +111,7 @@ slow in the pure R implementation. Installation of \code{AutoSpectralRcpp} is
 strongly encouraged.}
 
 \item{parallel}{Logical, default is \code{FALSE}. Set to \code{TRUE} to activate parallel
-processing using futures for multiple FCS files.}
+processing for multiple FCS files.}
 
 \item{threads}{Numeric, default is \code{NULL}, in which case \code{asp$worker.process.n}
 will be used. \code{asp$worker.process.n} is set by default to be one less than the

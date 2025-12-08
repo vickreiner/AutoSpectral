@@ -27,8 +27,9 @@ reload.flow.control <- function( control.dir, control.def.file, asp ) {
   control.table <- read.csv( control.def.file, na.strings = "",
                              stringsAsFactors = FALSE )
   control.table <- dplyr::filter( control.table, filename != "" )
-  check.critical( anyDuplicated( control.table$filename ) == 0,
-                  "duplicated filenames in fcs data" )
+
+  if ( anyDuplicated( control.table$filename ) != 0 )
+    stop( "duplicated filenames in fcs data", call. = FALSE )
 
   flow.set.channel <- colnames(
     suppressWarnings(

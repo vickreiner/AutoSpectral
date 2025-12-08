@@ -161,8 +161,12 @@ do.gate <- function( gate.data, viability.gate, large.gate,
 
   gate.bound.density.max.n <- nrow( gate.bound.density.max.idx )
 
-  check.critical( gate.bound.density.max.n >= 1,
-                  paste0( "gate error: no population found in sample bound", samp ) )
+  if ( gate.bound.density.max.n < 1 ) {
+    stop(
+      paste0( "gate error: no population found in sample bound ", samp ),
+      call. = FALSE
+    )
+  }
 
   gate.bound.density.max <- data.frame(
     x = gate.bound.density$x[ gate.bound.density.max.idx[ , 1 ] ],
@@ -195,18 +199,22 @@ do.gate <- function( gate.data, viability.gate, large.gate,
     gate.bound.density.max.offset <- gate.bound.density.max.offset + 1
   }
 
-  check.critical(
-    gate.bound.density.max.offset <= gate.bound.density.max.n,
-    paste( "gate error: no good maximum found in sample bound",
-           samp ) )
+  if ( gate.bound.density.max.offset > gate.bound.density.max.n ) {
+    stop(
+      paste( "gate error: no good maximum found in sample bound", samp ),
+      call. = FALSE
+    )
+  }
 
   gate.bound.density.max.target <- gate.bound.density.max.target +
     gate.bound.density.max.offset - 1
 
-  check.critical(
-    gate.bound.density.max.target <= gate.bound.density.max.n,
-    paste( "gate error: target maximum not found in sample bound",
-           samp ) )
+  if ( gate.bound.density.max.target > gate.bound.density.max.n ) {
+    stop(
+      paste( "gate error: target maximum not found in sample bound", samp ),
+      call. = FALSE
+    )
+  }
 
   if ( gate.bound.density.max.n > 1 )
   {
@@ -375,8 +383,12 @@ do.gate <- function( gate.data, viability.gate, large.gate,
 
     gate.region.density.max.n <- nrow( gate.region.density.max.idx )
 
-    check.critical( gate.region.density.max.n >= 1,
-                    paste( "gate error: no population found in sample region", samp ) )
+    if ( gate.region.density.max.n < 1 ) {
+      stop(
+        paste( "gate error: no population found in sample region", samp ),
+        call. = FALSE
+      )
+    }
 
     gate.region.density.max <- data.frame(
       x = gate.region.density$x[ gate.region.density.max.idx[ , 1 ] ],

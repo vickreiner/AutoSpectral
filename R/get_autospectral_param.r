@@ -44,7 +44,8 @@ get.autospectral.param <- function( cytometer = "aurora", figures = TRUE )
   # cytometer-specific parameters
   get.param.function <- get0( sprintf( "get.autospectral.param.%s", cytometer ) )
 
-  check.critical( ! is.null( get.param.function ), "unsupported cytometer" )
+  if ( is.null( get.param.function ) )
+    stop( "unsupported cytometer", call. = FALSE )
 
   autosp.param <- get.param.function( autosp.param )
 

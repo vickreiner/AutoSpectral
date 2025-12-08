@@ -12,6 +12,7 @@
 #'
 #' @param dirty.expr A matrix containing the raw expression data, pre-cleaning.
 #' @param sample.name The name of the sample.
+
 #' @param spectral.channel The spectral channels to be used.
 #' @param biexp.transform The biexponential transformation function.
 #' @param transform.inv The inverse transformation function.
@@ -41,17 +42,17 @@ do.peacoQC <- function( dirty.expr, sample.name, spectral.channel,
     message( paste( "\033[34m", "Performing time-based cleaning of", sample.name,
                     "using PeacoQC", "\033[0m" ) )
 
-  transform.list <- transformList( spectral.channel, biexp.transform )
+  transform.list <- flowCore::transformList( spectral.channel, biexp.transform )
 
-  dirty.ff <- flowFrame( dirty.expr )
+  dirty.ff <- flowCore::flowFrame( dirty.expr )
 
-  keyword( dirty.ff )$FILENAME <- sample.name
+  flowCore::keyword( dirty.ff )$FILENAME <- sample.name
 
-  dirty.ff <- transform( dirty.ff, transform.list )
+  dirty.ff <- flowCore::transform( dirty.ff, transform.list )
 
-  dirty.ff <- RemoveMargins( dirty.ff, spectral.channel )
+  dirty.ff <- PeacoQC::RemoveMargins( dirty.ff, spectral.channel )
 
-  peacoQC.result <- suppressWarnings( PeacoQC(
+  peacoQC.result <- suppressWarnings( PeacoQC::PeacoQC(
     ff = dirty.ff,
     channels = spectral.channel,
     determine_good_cells = method,
@@ -61,12 +62,14 @@ do.peacoQC <- function( dirty.expr, sample.name, spectral.channel,
     ) )
 
   if ( figures )
-    PlotPeacoQC( dirty.ff, spectral.channel, output.dir,
-                 display_peaks = peacoQC.result )
+    PeacoQC::PlotPeacoQC(
+      dirty.ff, spectral.channel, output.dir,
+      display_peaks = peacoQC.result
+      )
 
-  transform.list <- transformList( spectral.channel, transform.inv )
+  transform.list <- flowCore::transformList( spectral.channel, transform.inv )
 
-  peacoQC.result$FinalFF <- transform( peacoQC.result$FinalFF, transform.list )
+  peacoQC.result$FinalFF <- flowCore::transform( peacoQC.result$FinalFF, transform.list )
 
   clean.expr <- flowCore::exprs( peacoQC.result$FinalFF )[ , all.channels ]
 

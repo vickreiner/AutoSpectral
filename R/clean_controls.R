@@ -54,6 +54,9 @@
 #' files are read in. If the data is larger, parallel processing may not
 #' accelerate the process much.
 #' @param verbose Logical, default is `TRUE`. Set to `FALSE` to suppress messages.
+#' @param threads Numeric, number of threads to use for parallel processing.
+#' Default is `NULL` which will revert to `asp$worker.process.n` if
+#' `parallel=TRUE`.
 #'
 #' @return
 #' Returns a modified `flow.control` with the original data intact. New, cleaned
@@ -75,10 +78,12 @@ clean.controls <- function( flow.control, asp,
                             intermediate.figures = FALSE,
                             main.figures = TRUE,
                             parallel = FALSE,
-                            verbose = TRUE ) {
+                            verbose = TRUE,
+                            threads = NULL ) {
 
-  if ( intermediate.figures & !main.figures )
-    main.figures <- TRUE
+  if ( intermediate.figures & !main.figures ) main.figures <- TRUE
+
+  if ( parallel & is.null( threads ) ) threads <- asp$worker.process.n
 
   flow.sample <- flow.control$sample
   flow.sample.n <- length( flow.sample )
@@ -125,9 +130,16 @@ clean.controls <- function( flow.control, asp,
     if ( !dir.exists( asp$figure.peacoqc.dir ) & main.figures )
       dir.create( asp$figure.peacoqc.dir )
 
-    clean.expr <- run.peacoQC( clean.expr, spectral.channel, all.channels, asp,
-                               figures = main.figures, parallel = parallel,
-                               verbose = verbose )
+    clean.expr <- run.peacoQC(
+      expr.data = clean.expr,
+      spectral.channel = spectral.channel,
+      all.channels = all.channels,
+      asp = asp,
+      figures = main.figures,
+      parallel = parallel,
+      threads = threads,
+      verbose = verbose
+    )
   }
 
   ### Stage 2: Trimming -----------------
@@ -204,13 +216,23 @@ clean.controls <- function( flow.control, asp,
                                                          %in% af.removal.sample ]
 
         # remove identified AF from single-color controls
-        af.removed.expr <- run.af.removal( clean.expr, af.removal.sample,
-                                           spectral.channel, af.remove.peak.channels,
-                                           flow.negative, asp,
-                                           flow.control$scatter.parameter,
-                                           negative.n, positive.n, scatter.match,
-                                           intermediate.figures, main.figures,
-                                           parallel = parallel, verbose = verbose )
+        af.removed.expr <- run.af.removal(
+          clean.expr = clean.expr,
+          af.removal.sample = af.removal.sample,
+          spectral.channel = spectral.channel,
+          peak.channel = af.remove.peak.channels,
+          universal.negative = flow.negative,
+          asp = asp,
+          scatter.param = flow.control$scatter.parameter,
+          negative.n = negative.n,
+          positive.n = positive.n,
+          scatter.match = scatter.match,
+          intermediate.figures = intermediate.figures,
+          main.figures = main.figures,
+          parallel = parallel,
+          threads = threads,
+          verbose = verbose
+        )
 
         # store cleaned data
         cleaned.samples <- names( af.removed.expr )
@@ -281,17 +303,23 @@ clean.controls <- function( flow.control, asp,
       univ.peak.channels <- flow.control$channel[ flow.control$fluorophore
                                                   %in% univ.sample ]
 
-      univ.neg.expr <- run.universal.negative( clean.expr, univ.sample,
-                                               flow.negative,
-                                               flow.control$scatter.parameter,
-                                               univ.peak.channels, downsample,
-                                               negative.n, positive.n,
-                                               spectral.channel, asp,
-                                               flow.control.type,
-                                               scatter.match,
-                                               intermediate.figures,
-                                               main.figures,
-                                               verbose )
+      univ.neg.expr <- run.universal.negative(
+        clean.expr = clean.expr,
+        univ.sample = univ.sample,
+        universal.negatives = flow.negative,
+        scatter.param = flow.control$scatter.parameter,
+        peak.channels = univ.peak.channels,
+        downsample = downsample,
+        negative.n = negative.n,
+        positive.n = positive.n,
+        spectral.channel = spectral.channel,
+        asp = asp,
+        control.type = flow.control.type,
+        scatter.match = scatter.match,
+        intermediate.figures = intermediate.figures,
+        main.figures = main.figures,
+        verbose = verbose
+      )
 
       # merge in cleaned data
       clean.expr[ names( univ.neg.expr ) ] <- univ.neg.expr
@@ -324,9 +352,14 @@ clean.controls <- function( flow.control, asp,
     downsample.peak.channels <- flow.control$channel[ flow.control$fluorophore
                                                       %in% downsample.sample ]
 
-    downsample.expr <- run.downsample( clean.expr, downsample.sample,
-                                       downsample.peak.channels,
-                                       negative.n, positive.n, verbose )
+    downsample.expr <- run.downsample(
+      clean.expr.data = clean.expr,
+      downsample.sample = downsample.sample,
+      peak.channels = downsample.peak.channels,
+      negative.n = negative.n,
+      positive.n = positive.n,
+      verbose = verbose
+    )
 
     # merge in cleaned data
     clean.expr[ names( downsample.expr ) ] <- downsample.expr

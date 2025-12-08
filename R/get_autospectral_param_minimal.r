@@ -5,7 +5,7 @@
 #'
 #' @description Returns the base set of AutoSpectral parameters.
 #'
-#' @importFrom future availableCores
+#' @importFrom parallelly availableCores
 #'
 #' @return A list of minimal AutoSpectral parameters.
 #'

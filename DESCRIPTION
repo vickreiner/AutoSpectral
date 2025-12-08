@@ -33,8 +33,6 @@ Imports:
     fields,
     flowCore,
     flowWorkspace,
-    future,
-    future.apply,
     ggplot2,
     grDevices,
     rlang,

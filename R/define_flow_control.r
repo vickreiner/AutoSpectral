@@ -76,14 +76,17 @@ define.flow.control <- function( control.dir,
 
   check.control.file( control.dir, control.def.file, asp, strict = TRUE )
 
+  if ( parallel & is.null( threads ) ) threads <- asp$worker.process.n
+
   # read channels from controls
   if ( verbose ) message( "\033[34m Reading control information \033[0m" )
 
   control.table <- read.csv( control.def.file, na.strings = "",
                              stringsAsFactors = FALSE )
   control.table <- dplyr::filter( control.table, filename != "" )
-  check.critical( anyDuplicated( control.table$filename ) == 0,
-                  "duplicated filenames in fcs data" )
+
+  if ( anyDuplicated( control.table$filename ) != 0 )
+    stop( "duplicated filenames in fcs data", call. = FALSE )
 
   flow.set.channel <- colnames(
     suppressWarnings(
@@ -266,13 +269,13 @@ define.flow.control <- function( control.dir,
     error.msg <- sprintf(
       "wrong channel name, not found in fcs data\n\texpected: %s\n\tfound: %s",
       flow.scatter.and.channel.unmatched, flow.set.unmatched )
-    check.critical( FALSE, error.msg )
+    stop( error.msg, call. = FALSE )
   }
 
   names( flow.channel ) <- flow.sample
 
-  check.critical( ! anyDuplicated( flow.scatter.and.channel.spectral ),
-                  "internal error: names for channels overlap" )
+  if ( anyDuplicated( flow.scatter.and.channel.spectral ) != 0 )
+    stop( "internal error: names for channels overlap", call. = FALSE )
 
   # set labels for time, scatter parameters and channels
   flow.scatter.and.channel.label <- c( "Time", flow.scatter.parameter,
@@ -349,20 +352,30 @@ define.flow.control <- function( control.dir,
       asp = asp
     )
 
-    exports <- c( "flow.sample", "args.list", "gate.sample.plot",
-                  "get.gated.flow.expression.data" )
+    # set up parallel processing
+    if ( parallel ) {
+      exports <- c( "flow.sample", "args.list", "gate.sample.plot",
+                    "get.gated.flow.expression.data" )
+      result <- create.parallel.lapply(
+        asp,
+        exports,
+        parallel = parallel,
+        threads = threads,
+        export.env = environment()
+      )
+      lapply.function <- result$lapply
+    } else {
+      lapply.function <- lapply
+      result <- list( cleanup = NULL )
+    }
 
-    result <- create.parallel.lapply( asp, exports, parallel = TRUE,
-                                      threads = threads,
-                                      export.env = environment() )
-    lapply.function <- result$lapply
-    # parallel processing
+    # main call
     flow.expr.data <- tryCatch( {
       lapply.function( flow.sample, function( f ) {
         do.call( get.gated.flow.expression.data, c( list( f ), args.list ) )
       } )
     }, finally = {
-      # Clean up cluster when done
+      # clean up cluster when done
       if ( !is.null( result$cleanup ) ) result$cleanup()
     } )
 
@@ -372,7 +385,6 @@ define.flow.control <- function( control.dir,
     # read in flow data as is
     if ( verbose ) message( "\033[34m Reading FCS files \033[0m" )
 
-    # Set up parallel processing
     args.list <- list(
       file.name = flow.file.name,
       control.dir = control.dir,
@@ -380,19 +392,30 @@ define.flow.control <- function( control.dir,
       spectral.channel = flow.spectral.channel,
       set.resolution = flow.set.resolution
     )
-    exports <- c( "flow.sample", "args.list", "get.ungated.flow.expression.data" )
 
-    result <- create.parallel.lapply( asp, exports, parallel = TRUE,
-                                      threads = threads,
-                                      export.env = environment() )
-    lapply.function <- result$lapply
+    # set up parallel processing
+    if ( parallel ) {
+      exports <- c( "flow.sample", "args.list", "get.ungated.flow.expression.data" )
+      result <- create.parallel.lapply(
+        asp,
+        exports,
+        parallel = parallel,
+        threads = threads,
+        export.env = environment()
+      )
+      lapply.function <- result$lapply
+    } else {
+      lapply.function <- lapply
+      result <- list( cleanup = NULL )
+    }
 
+    # main call
     flow.expr.data <- tryCatch( {
       lapply.function( flow.sample, function( f ) {
         do.call( get.ungated.flow.expression.data, c( list( f ), args.list ) )
       } )
     }, finally = {
-      # Clean up cluster when done
+      # clean up cluster when done
       if ( !is.null( result$cleanup ) ) result$cleanup()
     } )
 

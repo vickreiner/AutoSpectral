@@ -10,8 +10,8 @@
 #' @importFrom flowWorkspace flowjo_biexp
 #' @importFrom stats prcomp sd
 #'
-#' @param clean.expr List containing cleaned expression data.
 #' @param samp Sample identifier.
+#' @param clean.expr List containing cleaned expression data.
 #' @param spectral.channel Vector of spectral channel names.
 #' @param peak.channel Vector of peak detection channels for fluorophores.
 #' @param universal.negative Named vector mapping samples to their matching
@@ -38,7 +38,7 @@
 #' @return A matrix containing the expression data with autofluorescent events
 #' removed for the sample.
 
-remove.af <- function( clean.expr, samp, spectral.channel, peak.channel,
+remove.af <- function( samp, clean.expr, spectral.channel, peak.channel,
                        universal.negative, asp, scatter.param,
                        negative.n = 500, positive.n = 1000,
                        scatter.match = TRUE,

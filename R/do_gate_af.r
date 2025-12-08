@@ -78,8 +78,12 @@ do.gate.af <- function( gate.data, samp, asp, intermediate.figures = FALSE ) {
 
   gate.bound.density.max.n <- nrow( gate.bound.density.max.idx )
 
-  check.critical( gate.bound.density.max.n >= 1,
-                  paste0( "gate error: no population found in sample bound", samp ) )
+  if ( gate.bound.density.max.n < 1 ) {
+    stop(
+      paste0( "gate error: no population found in sample bound ", samp ),
+      call. = FALSE
+    )
+  }
 
   gate.bound.density.max <- data.frame(
     x = gate.bound.density$x[ gate.bound.density.max.idx[ , 1 ] ],
@@ -112,9 +116,12 @@ do.gate.af <- function( gate.data, samp, asp, intermediate.figures = FALSE ) {
     gate.data[, 1], gate.data[, 2],
     tile.polygon[ , 1 ], tile.polygon[ , 2 ] ) > 0 )
 
-  check.critical( length( gate.region.data.idx ) > 0,
-                  paste( "Error: No points in target Voronoi tile for sample",
-                         samp ) )
+  if ( length( gate.region.data.idx ) == 0 ) {
+    stop(
+      paste( "Error: No points in target Voronoi tile for sample", samp ),
+      call. = FALSE
+    )
+  }
 
   # define region boundaries
   gate.region.data <- gate.data[ gate.region.data.idx, ]

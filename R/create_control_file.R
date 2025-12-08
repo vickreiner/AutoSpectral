@@ -36,8 +36,9 @@ create.control.file <- function( control.dir, asp ){
   # find the files
   control.files <- list.files( control.dir, pattern = ".fcs", ignore.case = TRUE )
 
-  check.critical( ! is.null( control.files ) & length( control.files > 1 ),
-                  "Single-stained control files not found. Check directory." )
+  if ( is.null( control.files ) || length( control.files ) <= 1 ) {
+    stop( "Single-stained control files not found. Check directory.", call. = FALSE )
+  }
 
   control.colnames <- c( "filename", "fluorophore", "marker", "channel",
                          "control.type", "universal.negative", "large.gate" )

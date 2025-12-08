@@ -222,15 +222,15 @@ get.fluorophore.spectra <- function( flow.control, asp, use.clean.expr = TRUE,
 
     message( "\033[31m Similarity over 0.95 detected for one or more pairs of fluorophores.
 
-    Check the table below for problematic combinations.
+    Check the printed table in the console for problematic combinations.
     If both Fluor1 and Fluor2 are fluorophores,
     manually inspect the controls to confirm they have been prepared correctly.
-    Check the fcs_control_table to be sure you have set it up properly.
+    Check the fcs_control_file to be sure you have set it up properly.
 
     If one of the pair is AF, the other likely has minimal signal.
     In this case, run clean.controls and set use.clean.expr to TRUE.
     If you have already done that, manually inspect the control for real signal.
-         \033[0m" )
+             \033[0m" )
   }
 
   return( marker.spectra )

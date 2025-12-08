@@ -124,8 +124,12 @@ unmix.fcs <- function( fcs.file, spectra, asp, flow.control,
 
   # import fcs, without warnings for fcs 3.2
   fcs.data <- suppressWarnings(
-    flowCore::read.FCS( fcs.file, transformation = FALSE,
-                        truncate_max_range = FALSE, emptyValue = FALSE )
+    flowCore::read.FCS(
+      fcs.file,
+      transformation = FALSE,
+      truncate_max_range = FALSE,
+      emptyValue = FALSE
+      )
   )
 
   fcs.keywords <- flowCore::keyword( fcs.data )
@@ -180,78 +184,93 @@ unmix.fcs <- function( fcs.file, spectra, asp, flow.control,
   }
 
   # apply unmixing using selected method ---------------
-  unmixed.data <- switch( method,
-                         "OLS" = unmix.ols( spectral.exprs, spectra ),
-                         "WLS" = unmix.wls( spectral.exprs, spectra, weights ),
-                         "AutoSpectral" = {
-                           if ( requireNamespace("AutoSpectralRcpp", quietly = TRUE ) &&
-                                "unmix.autospectral.rcpp" %in% ls( getNamespace( "AutoSpectralRcpp" ) ) ) {
-                             tryCatch(
-                               AutoSpectralRcpp::unmix.autospectral.rcpp( raw.data = spectral.exprs,
-                                                                          spectra = spectra,
-                                                                          af.spectra = af.spectra,
-                                                                          spectra.variants = spectra.variants,
-                                                                          weighted = weighted,
-                                                                          weights = weights,
-                                                                          calculate.error = calculate.error,
-                                                                          use.dist0 = use.dist0,
-                                                                          verbose = asp$verbose,
-                                                                          parallel = parallel,
-                                                                          threads = threads,
-                                                                          speed = speed ),
-                               error = function( e ) {
-                                 warning( "AutoSpectralRcpp unmixing failed, falling back to standard AutoSpectral: ", e$message )
-                                 unmix.autospectral( raw.data = spectral.exprs,
-                                                     spectra = spectra,
-                                                     af.spectra = af.spectra,
-                                                     spectra.variants = spectra.variants,
-                                                     weighted = weighted,
-                                                     weights = weights,
-                                                     calculate.error = calculate.error,
-                                                     use.dist0 = use.dist0,
-                                                     verbose = asp$verbose )
-                               }
-                             )
-                           } else {
-                             warning( "AutoSpectralRcpp not available, falling back to standard AutoSpectral" )
-                             unmix.autospectral( raw.data = spectral.exprs,
-                                                 spectra = spectra,
-                                                 af.spectra = af.spectra,
-                                                 spectra.variants = spectra.variants,
-                                                 weighted = weighted,
-                                                 weights = weights,
-                                                 calculate.error = calculate.error,
-                                                 use.dist0 = use.dist0,
-                                                 verbose = asp$verbose )
-                           }
-                         },
-                         "Poisson" = unmix.poisson( spectral.exprs, spectra, asp, weights ),
-                         "FastPoisson" = {
-                           if ( requireNamespace("AutoSpectralRcpp", quietly = TRUE ) &&
-                               "unmix.poisson.fast" %in% ls( getNamespace( "AutoSpectralRcpp" ) ) ) {
-                             tryCatch(
-                               AutoSpectralRcpp::unmix.poisson.fast( spectral.exprs,
-                                                                     spectra,
-                                                                     weights = weights,
-                                                                     maxit = asp$rlm.iter.max,
-                                                                     tol = 1e-6,
-                                                                     n_threads = threads,
-                                                                     divergence.threshold = divergence.threshold,
-                                                                     divergence.handling = divergence.handling,
-                                                                     balance.weight = balance.weight ),
-                               error = function( e ) {
-                                 warning( "FastPoisson failed, falling back to standard Poisson: ", e$message )
-                                 unmix.poisson( spectral.exprs, spectra, asp, weights,
-                                                parallel, threads )
-                               }
-                             )
-                           } else {
-                             warning( "AutoSpectralRcpp not available, falling back to standard Poisson." )
-                             unmix.poisson( spectral.exprs, spectra, asp, weights,
-                                            parallel, threads )
-                           }
-                         },
-                         stop( "Unknown method" )
+  unmixed.data <- switch(
+    method,
+    "OLS" = unmix.ols( spectral.exprs, spectra ),
+    "WLS" = unmix.wls( spectral.exprs, spectra, weights ),
+    "AutoSpectral" = {
+      if ( requireNamespace("AutoSpectralRcpp", quietly = TRUE ) &&
+           "unmix.autospectral.rcpp" %in% ls( getNamespace( "AutoSpectralRcpp" ) ) ) {
+        tryCatch(
+          AutoSpectralRcpp::unmix.autospectral.rcpp(
+            raw.data = spectral.exprs,
+            spectra = spectra,
+            af.spectra = af.spectra,
+            spectra.variants = spectra.variants,
+            weighted = weighted,
+            weights = weights,
+            calculate.error = calculate.error,
+            use.dist0 = use.dist0,
+            verbose = asp$verbose,
+            parallel = parallel,
+            threads = threads,
+            speed = speed
+          ),
+          error = function( e ) {
+            warning( "AutoSpectralRcpp unmixing failed, falling back to standard AutoSpectral: ", e$message )
+            unmix.autospectral(
+              raw.data = spectral.exprs,
+              spectra = spectra,
+              af.spectra = af.spectra,
+              spectra.variants = spectra.variants,
+              weighted = weighted,
+              weights = weights,
+              calculate.error = calculate.error,
+              use.dist0 = use.dist0,
+              verbose = asp$verbose
+            )
+          }
+        )
+      } else {
+        warning( "AutoSpectralRcpp not available, falling back to standard AutoSpectral" )
+        unmix.autospectral(
+          raw.data = spectral.exprs,
+          spectra = spectra,
+          af.spectra = af.spectra,
+          spectra.variants = spectra.variants,
+          weighted = weighted,
+          weights = weights,
+          calculate.error = calculate.error,
+          use.dist0 = use.dist0,
+          verbose = asp$verbose
+        )
+      }
+    },
+    "Poisson" = unmix.poisson( spectral.exprs, spectra, asp, weights ),
+    "FastPoisson" = {
+      if ( requireNamespace("AutoSpectralRcpp", quietly = TRUE ) &&
+           "unmix.poisson.fast" %in% ls( getNamespace( "AutoSpectralRcpp" ) ) ) {
+        tryCatch(
+          AutoSpectralRcpp::unmix.poisson.fast(
+            spectral.exprs,
+            spectra,
+            weights = weights,
+            maxit = asp$rlm.iter.max,
+            tol = 1e-6,
+            n_threads = threads,
+            divergence.threshold = divergence.threshold,
+            divergence.handling = divergence.handling,
+            balance.weight = balance.weight
+          ),
+          error = function( e ) {
+            warning( "FastPoisson failed, falling back to standard Poisson: ", e$message )
+            unmix.poisson( spectral.exprs, spectra, asp, weights,
+                           parallel, threads )
+          }
+        )
+      } else {
+        warning( "AutoSpectralRcpp not available, falling back to standard Poisson." )
+        unmix.poisson(
+          spectral.exprs,
+          spectra,
+          asp,
+          weights,
+          parallel,
+          threads
+        )
+      }
+    },
+    stop( "Unknown method" )
   )
 
   # calculate model accuracy if desired

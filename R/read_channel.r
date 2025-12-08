@@ -33,8 +33,8 @@ read.channel <- function( control.dir, control.def.file, asp )
     # get used channels from controls
     control <- dplyr::filter( control, filename != "" )
 
-    check.critical( anyDuplicated( control$file.name ) == 0,
-                    "duplicated filenames in fcs data" )
+    if ( anyDuplicated( control$file.name ) != 0 )
+      stop( "duplicated filenames in fcs data", call. = FALSE )
 
    flow.set.channel <- colnames(
      suppressWarnings(

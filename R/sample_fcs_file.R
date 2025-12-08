@@ -20,17 +20,23 @@
 
 sample.fcs.file <- function( file.name, control.dir, downsample.n, asp ) {
 
-  ff <- suppressWarnings( read.FCS( file.path( control.dir, file.name ),
-                  transformation = FALSE,
-                  truncate_max_range = FALSE,
-                  emptyValue = FALSE ) )
+  ff <- suppressWarnings(
+    read.FCS( file.path( control.dir, file.name ),
+              transformation = FALSE,
+              truncate_max_range = FALSE,
+              emptyValue = FALSE )
+    )
 
   ff <- flowCore::exprs( ff )[ , asp$default.scatter.parameter ]
 
   event.n <- nrow( ff )
 
-  check.critical( event.n > asp$min.cell.warning.n,
-                  paste( "Fewer than", asp$min.cell.warning.n, "events in", file.name ) )
+  if ( event.n <= asp$min.cell.warning.n ) {
+    stop(
+      paste( "Fewer than", asp$min.cell.warning.n, "events in", file.name ),
+      call. = FALSE
+    )
+  }
 
   downsample.n <- if ( event.n < downsample.n ) event.n else downsample.n
 
