@@ -64,7 +64,8 @@
 #'
 #' @export
 
-clean.controls <- function( flow.control, asp,
+clean.controls <- function( flow.control,
+                            asp,
                             time.clean = FALSE,
                             trim = FALSE,
                             trim.factor = NULL,
@@ -83,7 +84,14 @@ clean.controls <- function( flow.control, asp,
 
   if ( intermediate.figures & !main.figures ) main.figures <- TRUE
 
-  if ( parallel & is.null( threads ) ) threads <- asp$worker.process.n
+  if ( parallel & is.null( threads ) )
+    threads <- asp$worker.process.n
+
+  if ( parallel )
+    threads <- max( floor( threads / 2 ), 1 )
+
+  if ( parallel )
+    warning( "Parallelization has not been fully optimized for `clean.controls`." )
 
   flow.sample <- flow.control$sample
   flow.sample.n <- length( flow.sample )
@@ -177,7 +185,6 @@ clean.controls <- function( flow.control, asp,
   # clean by removing autofluorescence contamination
   # recommended for controls from tissues (e.g., mouse splenocytes)
   # not needed for PBMCs
-  # can be done on a per control basis by specifying clean = TRUE in the fcs_control_file
 
   if ( af.remove ) {
     if ( main.figures ) {
@@ -194,6 +201,7 @@ clean.controls <- function( flow.control, asp,
     univ.neg <- univ.neg[ !is.null( univ.neg ) ]
     univ.neg <- univ.neg[ !is.na( univ.neg ) ]
     univ.neg <- univ.neg[ univ.neg != FALSE ]
+
     univ.neg.sample <- flow.control$sample[ flow.control.type == "cells" &
                                               flow.sample %in% univ.neg ]
     # create new negative slot
