@@ -71,7 +71,15 @@ new, so again, probably not perfect. To try it, visit
 ### Dev branch
 
 If you’re feeling adventurous or simply want early access to the latest
-features, you can install the development version of AutoSpectral from
+features, you can try the `dev` branch. At any given point, this may not
+be working well.
+
+AutoSpectral is open source. If you are interested in contributing,
+please visit
+[Development](https://drcytometer.github.io/AutoSpectral/articles/Development.html)
+for suggestions of where help is needed most.
+
+You can install the development version of AutoSpectral from
 [GitHub](https://github.com/) with:
 
 ``` r
