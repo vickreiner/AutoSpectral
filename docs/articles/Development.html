@@ -160,8 +160,14 @@ branch. Should be ~4x faster now.</li>
 <li>The primary improvement comes from generating fewer spectral
 variants to search through. My testing shows that a lower number is, if
 anything, better, presumably due to slightly higher quality of the
-spectra being generated while still covering the range of
-variation.</li>
+spectra being generated while still covering the range of variation.
+This will help in R as well as Rcpp.</li>
+<li>Secondary improvement comes from changing the solving strategy in
+C++ so that we aren’t recalculating the unmixing matrix (righthand
+solve) every time.</li>
+<li>Tertiary improvment from changing the C++ compiler flags.</li>
+<li>The pure R version will now benefit from parallelization,
+particularly on Mac/Linux.</li>
 <li>A lot more work is needed on this. I need a smarter strategy.</li>
 </ul>
 </li>
@@ -198,6 +204,17 @@ or regularization may be required.</li>
 where the multi-colour samples contain obvious errors outside the range
 of variation seen in the single-colour controls. This is not stuff I’m
 going to put online, so get in touch if you’d like to work on this.</li>
+</ul>
+</li>
+<li>
+<p>Integration of Poisson IRLS</p>
+<ul>
+<li>The Poisson IRLS in <code>AutoSpectralRcpp</code> is now working
+considerably better and faster. This may allow for integration of the
+Poisson optimization after identification of cellular autofluorescence
+and fluorophore signatures.</li>
+<li>For this to be practical, per-cell fluorophore optimization needs to
+be faster.</li>
 </ul>
 </li>
 </ul>
