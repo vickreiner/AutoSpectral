@@ -68,6 +68,42 @@ app that opens in RStudio. Hopefully this makes things easier. It is
 new, so again, probably not perfect. To try it, visit
 [AutoSpectralHelper](https://github.com/DrCytometer/AutoSpectralHelper).
 
+``` r
+# To install a specific release, e.g., the previous one:
+remotes::install_github("DrCytometer/AutoSpectral@v0.8.7")
+#> Using GitHub PAT from the git credential store.
+#> Downloading GitHub repo DrCytometer/AutoSpectral@v0.8.7
+#> parallelly (1.45.1   -> 1.46.0  ) [CRAN]
+#> BH         (1.87.0-1 -> 1.90.0-1) [CRAN]
+#> Skipping 3 packages not available: flowWorkspace, flowCore, PeacoQC
+#> Installing 2 packages: parallelly, BH
+#> Installing packages into 'C:/Users/Oliver Burton/AppData/Local/Temp/RtmpolsH0c/temp_libpath5b385e185829'
+#> (as 'lib' is unspecified)
+#> 
+#>   There is a binary version available but the source version is later:
+#>      binary   source needs_compilation
+#> BH 1.87.0-1 1.90.0-1             FALSE
+#> 
+#> package 'parallelly' successfully unpacked and MD5 sums checked
+#> 
+#> The downloaded binary packages are in
+#>  C:\Users\Oliver Burton\AppData\Local\Temp\RtmpWaIHME\downloaded_packages
+#> installing the source package 'BH'
+#> ── R CMD build ─────────────────────────────────────────────────────────────────
+#>       ✔  checking for file 'C:\Users\Oliver Burton\AppData\Local\Temp\RtmpWaIHME\remotes36101ec43ac1\DrCytometer-AutoSpectral-b02433e/DESCRIPTION'
+#>       ─  preparing 'AutoSpectral': (10s)
+#>    checking DESCRIPTION meta-information ...     checking DESCRIPTION meta-information ...   ✔  checking DESCRIPTION meta-information
+#>       ─  checking for LF line-endings in source and make files and shell scripts (362ms)
+#>       ─  checking for empty or unneeded directories
+#>   Removed empty directory      Removed empty directory 'AutoSpectral/vignettes'
+#>      Omitted 'LazyData' from DESCRIPTION
+#>       ─  building 'AutoSpectral_0.8.7.tar.gz'
+#>      
+#> 
+#> Installing package into 'C:/Users/Oliver Burton/AppData/Local/Temp/RtmpolsH0c/temp_libpath5b385e185829'
+#> (as 'lib' is unspecified)
+```
+
 ### Dev branch
 
 If you’re feeling adventurous or simply want early access to the latest
@@ -130,7 +166,22 @@ Workflow](https://drcytometer.github.io/AutoSpectral/articles/Full_AutoSpectral_
 - This is my first R package.
 
 If you want to use data from another cytometer and are wiling to provide
-files for establishing the workflow, contact the author/maintainer.
+files for establishing the workflow, contact the author/maintainer. See
+existing information, which may also assist you in setting up your
+control file, in the [cytometer
+database](https://docs.google.com/spreadsheets/d/1wj7QPkgpsuPNeVKyt-WWdBu5R48aZTgEbH8-_bpKeBY/edit?usp=sharing).
+
+AutoSpectral relies on a database of information containing fluorophore
+emission details. If your fluorophore is not detected automatically by
+`create.control.file()` and you want to add it, visit the Google sheet
+for the [fluorophore
+database](https://docs.google.com/spreadsheets/d/14j4lAQ6dkjDBKMborDv_MkSptyNBqZiBsq5jNNSCoiQ/edit?usp=sharing)
+and add it there. New fluorophores will be incorporated into updates.
+
+Similarly, there is a marker database to detect (and standardize) marker
+names if they appear in the single-stained FCS control file names. Feel
+free to add more markers or synonyms to the [marker
+database](https://docs.google.com/spreadsheets/d/16FAinR_Nfnl00mpHvmQFJT_uJJY3VUWk29yAaQ7HHn8/edit?usp=sharing).
 
 This work has received funding from the KU Leuven C1 program, the
 European Union’s Horizon 2020 research and innovation programme under
