@@ -77,6 +77,7 @@
 #' will be used. `asp$worker.process.n` is set by default to be one less than the
 #' available cores on the machine. Multi-threading is only used if `parallel` is
 #' `TRUE`.
+#' @param verbose Logical, controls messaging. Default is `TRUE`.
 #'
 #' @return None. The function writes the unmixed FCS data to a file.
 #'
@@ -99,7 +100,8 @@ unmix.fcs <- function( fcs.file, spectra, asp, flow.control,
                        balance.weight = 0.5,
                        speed = "fast",
                        parallel = TRUE,
-                       threads = NULL ) {
+                       threads = NULL,
+                       verbose = TRUE ) {
 
   if ( is.null( output.dir ) )
     output.dir <- asp$unmixed.fcs.dir
@@ -201,7 +203,7 @@ unmix.fcs <- function( fcs.file, spectra, asp, flow.control,
             weights = weights,
             calculate.error = calculate.error,
             use.dist0 = use.dist0,
-            verbose = asp$verbose,
+            verbose = verbose,
             parallel = parallel,
             threads = threads,
             speed = speed
@@ -217,7 +219,7 @@ unmix.fcs <- function( fcs.file, spectra, asp, flow.control,
               weights = weights,
               calculate.error = calculate.error,
               use.dist0 = use.dist0,
-              verbose = asp$verbose
+              verbose = verbose
             )
           }
         )
@@ -232,7 +234,7 @@ unmix.fcs <- function( fcs.file, spectra, asp, flow.control,
           weights = weights,
           calculate.error = calculate.error,
           use.dist0 = use.dist0,
-          verbose = asp$verbose
+          verbose = verbose
         )
       }
     },
