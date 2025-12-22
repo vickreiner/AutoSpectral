@@ -44,10 +44,12 @@ reload.flow.control <- function( control.dir, control.def.file, asp ) {
   flow.set.channel <- colnames(
     suppressWarnings(
       flowCore::exprs(
-        flowCore::read.FCS( file.path( control.dir, control.table$filename[ 1 ] ),
-                            transformation = NULL,
-                            truncate_max_range = FALSE,
-                            emptyValue = FALSE )
+        flowCore::read.FCS(
+          file.path( control.dir, control.table$filename[ 1 ] ),
+          transformation = NULL,
+          truncate_max_range = FALSE,
+          emptyValue = FALSE
+        )
       )
     )
   )

@@ -101,9 +101,12 @@ define.flow.control <- function( control.dir,
   flow.set.channel <- colnames(
     suppressWarnings(
       flowCore::exprs(
-        flowCore::read.FCS( file.path( control.dir, control.table$filename[ 1 ] ),
-                            truncate_max_range = FALSE,
-                            emptyValue = FALSE )
+        flowCore::read.FCS(
+          file.path(
+            control.dir, control.table$filename[ 1 ]
+            ),
+          truncate_max_range = FALSE,
+          emptyValue = FALSE )
       )
     )
   )

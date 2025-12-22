@@ -131,7 +131,7 @@ unmix.fcs <- function( fcs.file, spectra, asp, flow.control,
       transformation = FALSE,
       truncate_max_range = FALSE,
       emptyValue = FALSE
-      )
+    )
   )
 
   fcs.keywords <- flowCore::keyword( fcs.data )
