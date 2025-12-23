@@ -20,13 +20,13 @@
 #' @export
 
 check.control.file <- function(
-    control.def.file,
     control.dir,
+    control.def.file,
     asp,
     strict = FALSE
 ) {
 
-  issues <- validate.control.file( control.def.file, control.dir, asp )
+  issues <- validate.control.file( control.dir, control.def.file, asp )
 
   if ( nrow( issues ) == 0 ) {
     return( invisible( TRUE ) )
