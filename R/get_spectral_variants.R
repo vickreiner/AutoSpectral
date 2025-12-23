@@ -192,11 +192,11 @@ get.spectral.variants <- function( control.dir, control.def.file,
     spectra,
     af.spectra,
     verbose = FALSE
-    )
+  )
   unmixed.thresholds <- apply(
     unstained.unmixed[ , fluorophores ], 2, function( col )
-    quantile( col, 0.995 )
-    )
+      quantile( col, 0.995 )
+  )
 
   if ( is.null( names( table.fluors ) ) ) names( table.fluors ) <- table.fluors
 
@@ -268,7 +268,18 @@ get.spectral.variants <- function( control.dir, control.def.file,
   )
 
   # drop any that are NULL due to error
-  spectral.variants <- spectral.variants[ !sapply( spectral.variants, is.null ) ]
+  failed <- sapply( spectral.variants, is.null )
+  failed.variants <- names( spectral.variants )[ failed ]
+  spectral.variants <- spectral.variants[ !failed ]
+
+  if ( any( failed ) ) {
+    warning(
+      paste0(
+        "Calculation of spectral variation failed for ",
+        paste( failed.variants, collapse = "\n" )
+      )
+    )
+  }
 
   if ( verbose ) message( paste0( "\033[33m", "Spectral variation computed!", "\033[0m" ) )
 
