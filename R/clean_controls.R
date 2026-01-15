@@ -3,16 +3,15 @@
 #' @title Clean Controls
 #'
 #' @description
-#' A four-part function to clean single-color controls in order to extract
+#' A multi-part function to clean single-color controls in order to extract
 #' fluorophore signatures. Any part can be run independently:
 #'
-#' - **Stage 1**: PeacoQC to eliminate flow artefacts. Not required in most cases.
-#' - **Stage 2**: Trimming to eliminate extreme events. Not recommended for most
-#' use cases.
-#' - **Stage 3**: Autofluorescence noise removal using PCA unmixing on matching
+#' - **Stage 1**: Autofluorescence noise removal using PCA unmixing on matching
 #' unstained (cells only).
-#' - **Stage 4**: Brightest event selection from positive, universal negative
+#' - **Stage 2**: Brightest event selection from positive, universal negative
 #' from matching negative, and downsampling to speed up RLM spectra optimization.
+#'
+#' @importFrom lifecycle deprecate_warn
 #'
 #' @param flow.control A list prepared using `define.flow.control`, containing
 #' the data and essential information about the cytometer and data structure.
@@ -21,9 +20,9 @@
 #' @param time.clean Logical, default is `FALSE`. Whether to run PeacoQC to
 #' remove time-based inconsistencies in the controls.
 #' @param trim Logical, default is `FALSE`. Whether to remove extreme events
-#' (positive and negative) from controls.
+#' (positive and negative) from controls. Deprecated.
 #' @param trim.factor Numeric. Default is `asp$rlm.trim.factor`. Required if
-#' `trim = TRUE`.
+#' `trim = TRUE`. Deprecated.
 #' @param af.remove Logical, default is `TRUE`. Whether to remove intrusive
 #' autofluorescence contamination from cell controls using PCA-based
 #' identification and gating. Requires universal negatives to be defined in the
@@ -41,7 +40,7 @@
 #' events based on scatter profiles matching the positive events. Defines a
 #' region of FSC and SSC based on the distribution of selected positive events.
 #' @param scrub Logical, if `TRUE` allows for re-cleaning of already cleaned
-#' data, provided there are clean data in `flow.control`.
+#' data, provided there are clean data in `flow.control`. Deprecated.
 #' @param intermediate.figures Logical, if `TRUE` returns additional figures to
 #' show the inner workings of the cleaning, including definition of low-AF cell
 #' gates on the PCA-unmixed unstained and spectral ribbon plots of the AF
@@ -92,6 +91,37 @@ clean.controls <- function( flow.control,
 
   if ( parallel )
     warning( "Parallelization has not been fully optimized for `clean.controls`." )
+
+  # warn user if deprecated arguments are called
+  # these will be phased out later
+  if ( time.clean ) {
+    lifecycle::deprecate_warn(
+      "0.9.1",
+      "clean.controls(time.clean)",
+      "will be deprecated going forward"
+    )
+  }
+  if ( trim ) {
+    lifecycle::deprecate_warn(
+      "0.9.1",
+      "clean.controls(trim)",
+      "will be deprecated going forward"
+    )
+  }
+  if ( !is.null( trim.factor ) ) {
+    lifecycle::deprecate_warn(
+      "0.9.1",
+      "clean.controls(trim.factor)",
+      "will be deprecated going forward"
+    )
+  }
+  if ( scrub ) {
+    lifecycle::deprecate_warn(
+      "0.9.1",
+      "clean.controls(scrub)",
+      "will be deprecated going forward"
+    )
+  }
 
   flow.sample <- flow.control$sample
   flow.sample.n <- length( flow.sample )
