@@ -1,7 +1,7 @@
 Package: AutoSpectral
 Type: Package
 Title: Tools for Unmxing Spectral Flow Cytometry Data
-Version: 0.9.0
+Version: 0.9.1
 Authors@R: c(
     person(
       "Oliver", "Burton",
@@ -25,7 +25,7 @@ License: AGPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Imports:
-    EmbedSOM,
+    FlowSOM,
     MASS,
     PeacoQC,
     deldir,
