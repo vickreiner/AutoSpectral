@@ -123,6 +123,7 @@ create.parallel.lapply <- function( asp,
     } else {
       lapply.function <- backend$lapply
       cleanup <- backend$cleanup
+      cluster <- backend$cl
     }
   } else {
     # Assume Linux or other UNIX-like: allow mclapply but enforce single-thread BLAS per child
@@ -132,5 +133,11 @@ create.parallel.lapply <- function( asp,
     cleanup <- NULL
   }
 
-  return( list( lapply = lapply.function, cleanup = cleanup ) )
+  return(
+    list(
+      lapply = lapply.function,
+      cleanup = cleanup,
+      cluster = if ( exists( "cluster" ) ) cluster else NULL
+      )
+  )
 }
