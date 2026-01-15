@@ -1,9 +1,10 @@
-# unmix_ols.r
+# unmix_ols_fast.r
 
-#' @title Unmix OLS
+#' @title Unmix OLS Fast
 #'
 #' @description
-#' Performs spectral unmixing using ordinary least squares
+#' Faster solver for per-cell optimization workflow. Performs spectral unmixing
+#' using ordinary least squares.
 #'
 #' @param raw.data Expression data from raw fcs files. Cells in rows and
 #' detectors in columns. Columns should be fluorescent data only and must
@@ -17,16 +18,12 @@
 #'
 #' @export
 
-unmix.ols <- function( raw.data, spectra, weights = NULL ) {
+unmix.ols.fast <- function( raw.data, spectra, weights = NULL ) {
 
-  sv <- svd( t( spectra ) )
-  # solve unmixing matrix via singular value decomposition
-  # more stable than normal equations
-  # this is the Moore-Penrose pseudoinverse
-  unmixing.matrix <- sv$v %*% ( t( sv$u ) / sv$d )
+  XtX <- spectra %*% t( spectra )
 
-  unmixed.data <- tcrossprod( raw.data, unmixing.matrix )
-  colnames( unmixed.data ) <- rownames( spectra )
-  return( unmixed.data )
+  unmixing.matrix <- solve( XtX, spectra )
+
+  raw.data %*% t( unmixing.matrix )
 
 }
