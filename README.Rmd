@@ -18,6 +18,28 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
+**Version 0.9.1**
+
+Welcome to the Development branch of AutoSpectral.
+
+This will always be a work-in-progress, and will not necessarily be stable at any given point. At the moment, most of the changes taking place relate to speeding things up or fixing any reported bugs.
+
+To install the development version, run the code below in your R/RStudio. This will overwrite any prior installation of AutoSpectral. To restore the stable version of AutoSpectral, simply re-run the install_github command without the @dev bit.
+
+``` {r, eval = FALSE}
+# Install Bioconductor packages
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install(c("flowWorkspace", "flowCore", "PeacoQC", "FlowSOM"))
+
+# You'll need devtools or remotes to install from GitHub.
+# install.packages("devtools")
+devtools::install_github("DrCytometer/AutoSpectral@dev")
+```
+
+
+# Introduction
+
 AutoSpectral is AutoSpill updated for the spectral flow era.
 
 The goal of AutoSpectral is to provide you with the best possible spectral signatures of the fluorophores in your single-stained controls. Whether or not these accurately model your fully stained samples will depend on what you've chosen to use for the controls, how they were prepared and other factors such as machine condition and any divergence in handling between samples and controls. 
@@ -44,11 +66,11 @@ At the moment, the following cytometers are supported:
 [![Dev](https://img.shields.io/badge/dev-branch-orange)](https://github.com/DrCytometer/AutoSpectral/tree/dev)
 
 
-### Latest Release
+### Latest Stable Release
 
-**Version 0.9.1**
+**Version 0.9.0**
 
-To install the latest, hopefully stable version, install using `devtools` or `remotes`. You will need to install the Bioconductor packages separately, I believe.
+To install the latest, hopefully stable version, install using `devtools` or `remotes`. You will need to install the Bioconductor packages separately.
 
 ``` {r, eval = FALSE}
 # Install Bioconductor packages
