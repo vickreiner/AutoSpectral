@@ -120,6 +120,7 @@ unmix.fcs <- function(
     )
   }
 
+  # create output folder if it doesn't exist
   if ( is.null( output.dir ) )
     output.dir <- asp$unmixed.fcs.dir
   if ( !dir.exists( output.dir ) )
@@ -151,6 +152,7 @@ unmix.fcs <- function(
     )
   )
 
+  # get keyword information
   fcs.keywords <- flowCore::keyword( fcs.data )
   file.name <- flowCore::keyword( fcs.data, "$FIL" )
 
@@ -175,13 +177,15 @@ unmix.fcs <- function(
 
   # extract exprs
   fcs.exprs <- flowCore::exprs( fcs.data )
-  rm( fcs.data )
+  rm( fcs.data ) # free up memory
   original.param <- colnames( fcs.exprs )
 
+  # extract spectral data
   spectral.channel <- colnames( spectra )
   spectral.exprs <- fcs.exprs[ , spectral.channel, drop = FALSE ]
 
   other.channels <- setdiff( colnames( fcs.exprs ), spectral.channel )
+
   # remove height and width if present
   suffixes <- c( "-H", "-W" )
   for ( ch in spectral.channel[ grepl( "-A$", spectral.channel ) ] ) {
@@ -191,7 +195,7 @@ unmix.fcs <- function(
   other.exprs <- fcs.exprs[ , other.channels, drop = FALSE ]
 
   if ( !include.raw )
-    rm( fcs.exprs )
+    rm( fcs.exprs ) # free up memory
 
   # remove imaging parameters if desired
   if ( grepl( "Discover", asp$cytometer ) & !include.imaging )
@@ -200,7 +204,11 @@ unmix.fcs <- function(
   # define weights if needed
   if ( weighted | method == "WLS"| method == "Poisson"| method == "FastPoisson" ) {
     if ( is.null( weights ) ) {
+      # Poisson-like weighting based on mean expression
+      # (variance = mean in a Poisson distribution)
+      # enforce non-zero
       weights <- pmax( abs( colMeans( spectral.exprs ) ), 1e-6 )
+      # weights are inverse of signal (more signal, more noise, less reliable)
       weights <- 1 / weights
     }
   }
@@ -305,7 +313,7 @@ unmix.fcs <- function(
     unmixed.data <- cbind( other.exprs, unmixed.data )
   }
 
-  rm( spectral.exprs, other.exprs )
+  rm( spectral.exprs, other.exprs ) # free up memory
 
   # fix any NA values (e.g., plate location with S8)
   if ( anyNA( unmixed.data ) )
@@ -332,6 +340,7 @@ unmix.fcs <- function(
   param.keywords <- list()
   n.param <- ncol( unmixed.data )
 
+  # check all parameters and update as needed
   for ( i in seq_len( n.param ) ) {
     p.name <- colnames( unmixed.data )[ i ]
 
@@ -373,7 +382,7 @@ unmix.fcs <- function(
     }
   }
 
-  # combine
+  # combine new keywords with original keywords
   new.keywords <- modifyList(
     modifyList( non.param.keys, param.keywords ),
     list(
@@ -386,9 +395,19 @@ unmix.fcs <- function(
 
   # weighting
   if ( !is.null( weights ) ) {
-    weights.str <- paste( c( length( spectral.channel ),
-                           spectral.channel,
-                           formatC( weights, digits = 8, format = "fg" ) ), collapse = "," )
+    # add weights to a new keyword in correct format
+    weights.str <- paste(
+      c(
+        length( spectral.channel ),
+        spectral.channel,
+        formatC(
+          weights,
+          digits = 8,
+          format = "fg"
+        )
+      ),
+      collapse = ","
+    )
     new.keywords[[ "$WEIGHTS" ]] <- weights.str
   }
 
@@ -398,6 +417,8 @@ unmix.fcs <- function(
   detector.n <- ncol( spectra )
   fluorophores <- paste0( rownames( spectra ), "-A" )
   vals <- as.vector( t( spectra ) )
+
+  # add spillover/spectra to a new keyword in correct format
   formatted.vals <- formatC( vals, digits = 8, format = "fg", flag = "#" )
   spill.string <- paste(
     c( fluor.n, detector.n, fluorophores, colnames( spectra ), formatted.vals ),
@@ -418,20 +439,28 @@ unmix.fcs <- function(
     new.keywords[[ "$AUTOFLUORESCENCE" ]] <- af.string
   }
 
-  # define new FCS file
+  ### define new FCS file
+  # append "-A" to fluorophore and AF channel names
   fluor.orig <- colnames( unmixed.data )
-  colnames( unmixed.data ) <- paste0( fluor.orig, "-A" ) # this line is the problem
+  colnames( unmixed.data ) <-
+    ifelse( fluor.orig %in% c( rownames( spectra ), "AF" ),
+            paste0( fluor.orig, "-A" ),
+            fluor.orig )
+
+  # create the flowFrame for writing the FCS file
   flow.frame <- suppressWarnings( flowCore::flowFrame( unmixed.data ) )
   param.desc <- flowCore::parameters( flow.frame )@data$desc
 
   # add marker names to description
   for ( i in seq_len( n.param ) ) {
     orig.name <- fluor.orig[ i ]
-    # Get the marker from flow.control
+    # get the marker from flow.control
     f.idx <- match( orig.name, flow.control$fluorophore )
     if ( !is.na( f.idx ) )
       param.desc[ i ] <- as.character( flow.control$antigen[ f.idx ] )
   }
+
+  # write the parameter to the flowFrame
   flowCore::parameters( flow.frame )@data$desc <- param.desc
   keyword( flow.frame ) <- new.keywords
 

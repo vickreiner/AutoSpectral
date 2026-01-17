@@ -4,9 +4,7 @@
 - Faster base R per-cell optimization.
 
 ## Bug fixes
-- Patch to writing of "-A" in the channel names of FCS files. This was 
-implemented in 0.9.0 but was incorrectly applied to all channels rather than
-just the fluorescence parameters.
+
 
 # AutoSpectral 0.9.1 (2026-01-15)
 
@@ -32,6 +30,9 @@ this have an impact.
 - Switch to FlowSOM for `SOM()` support. `EmbedSOM::SOM()` appears to have a
 compilation error for Mac and has been removed from CRAN. Note that FlowSOM must
 be installed separately using BiocManager.
+- Patch to writing of "-A" in the channel names of FCS files. This was 
+implemented in 0.9.0 but was incorrectly applied to all channels rather than
+just the fluorescence parameters.
 
 
 # AutoSpectral 0.9.0 (2025-12-23)
