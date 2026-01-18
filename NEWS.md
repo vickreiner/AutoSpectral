@@ -1,11 +1,3 @@
-# AutoSpectral 0.9.2 (2026-01-25)
-
-## Improvements
-- Faster base R per-cell optimization.
-
-## Bug fixes
-
-
 # AutoSpectral 0.9.1 (2026-01-15)
 
 ## Improvements
@@ -19,7 +11,7 @@ among variously tested options for base R unmixing.
 
 ## Lifecycle warnings
 - The `calculate.error` option for calculation of root mean squared error (RMSE)
-will be deprecated as it slows down the unmixing and does not meaningfully
+has been deprecated as it slows down the unmixing and does not meaningfully
 measure the unmixing improvement.
 - The `time.clean` option for `clean.controls()` will be deprecated. This uses
 PeacoQC for time-based cleaning of single-stained control files. I've yet to see
@@ -33,6 +25,11 @@ be installed separately using BiocManager.
 - Patch to writing of "-A" in the channel names of FCS files. This was 
 implemented in 0.9.0 but was incorrectly applied to all channels rather than
 just the fluorescence parameters.
+
+## Notes
+- Dependencies have been slimmed down. `tidyr`, `dplyr` and `rlang` have all been
+removed in favor of base R. Base R packages `stats`, `utils` and `grDevices` are
+called via `::` rather than imported into the NAMESPACE.
 
 
 # AutoSpectral 0.9.0 (2025-12-23)
