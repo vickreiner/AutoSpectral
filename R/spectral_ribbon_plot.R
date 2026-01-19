@@ -272,6 +272,9 @@ spectral.ribbon.plot <- function(
       )
     )
 
+    if ( !is.null( data.list ) )
+      suppressWarnings( print( ribbon.plot ) )
+
   } else {
     suppressWarnings( print( ribbon.plot ) )
   }
